@@ -36,7 +36,7 @@ services:
       - orderservice
       - eventservice
 
-  order-service:
+  orderservice:
     build: ./orderservice
     ports:
       - "8081:8081"
@@ -47,7 +47,7 @@ services:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/orders_db
       SPRING_RABBITMQ_HOST: rabbitmq
 
-  inventory-service:
+  inventoryservice:
     build: ./inventoryservice
     ports:
       - "8082:8082"
@@ -59,7 +59,7 @@ services:
       SPRING_RABBITMQ_HOST: rabbitmq
 
   # --- stub, build in Phase 2 ---
-  event-service:
+  eventservice:
     build: ./eventservice
     ports:
       - "8083:8083"
@@ -69,7 +69,7 @@ services:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/events_db
 
   # --- stub, build in Phase 3 ---
-  notification-service:
+  notificationservice:
     build: ./notificationservice
     ports:
       - "8084:8084"
@@ -78,7 +78,7 @@ services:
     environment:
       SPRING_RABBITMQ_HOST: rabbitmq
 
-  bot-service:
+  botservice:
     build: ./botservice
     ports:
       - "8085:8085"
