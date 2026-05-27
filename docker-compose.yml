@@ -1,4 +1,5 @@
 services:
+
   mysql:
     image: mysql:8.0
     environment:
@@ -7,8 +8,8 @@ services:
     ports:
       - "3306:3306"
     volumes:
-#      - mysql_data:/var/lib/mysql
       - ./init-db:/docker-entrypoint-initdb.d
+
   rabbitmq:
     image: rabbitmq:3-management
     ports:
@@ -17,7 +18,25 @@ services:
     environment:
       RABBITMQ_DEFAULT_USER: guest
       RABBITMQ_DEFAULT_PASS: guest
-  orderservice:
+
+  authservice:
+    build: ./authservice
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/auth_db
+      SPRING_RABBITMQ_HOST: rabbitmq
+
+  bff:
+    build: ./bff
+    ports:
+      - "3000:3000"
+    depends_on:
+      - authservice
+      - orderservice
+      - eventservice
+
+  order-service:
     build: ./orderservice
     ports:
       - "8081:8081"
@@ -27,16 +46,43 @@ services:
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/orders_db
       SPRING_RABBITMQ_HOST: rabbitmq
-  stockservice:
-    build: ./stockservice
+
+  inventory-service:
+    build: ./inventoryservice
     ports:
       - "8082:8082"
     depends_on:
       - mysql
       - rabbitmq
     environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/stock_db
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/inventory_db
       SPRING_RABBITMQ_HOST: rabbitmq
 
-volumes:
-  mysql_data:
+  # --- stub, build in Phase 2 ---
+  event-service:
+    build: ./eventservice
+    ports:
+      - "8083:8083"
+    depends_on:
+      - mysql
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/events_db
+
+  # --- stub, build in Phase 3 ---
+  notification-service:
+    build: ./notificationservice
+    ports:
+      - "8084:8084"
+    depends_on:
+      - rabbitmq
+    environment:
+      SPRING_RABBITMQ_HOST: rabbitmq
+
+  bot-service:
+    build: ./botservice
+    ports:
+      - "8085:8085"
+    depends_on:
+      - rabbitmq
+    environment:
+      SPRING_RABBITMQ_HOST: rabbitmq
