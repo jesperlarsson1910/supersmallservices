@@ -1,7 +1,10 @@
 package org.example.orderservice.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.example.event.TicketOrderPlacedEvent;
 import org.example.orderservice.config.RabbitConfig;
-import org.example.event.OrderPlacedEvent;
+import org.example.orderservice.controller.ChaosContext;
+import org.example.orderservice.controller.ChaosScenario;
 import org.example.orderservice.model.OutboxEvent;
 import org.example.orderservice.repository.OutboxRepository;
 import org.slf4j.Logger;
@@ -15,27 +18,29 @@ import java.util.List;
 
 @Service
 public class OutboxRelay {
+
     private static final Logger logger = LoggerFactory.getLogger(OutboxRelay.class);
     private final OutboxRepository outboxRepository;
     private final RabbitTemplate rabbitTemplate;
-    private final org.example.orderservice.controller.ChaosContext chaosContext;
-    private final com.fasterxml.jackson.databind.ObjectMapper objectMapper;
+    private final ChaosContext chaosContext;
+    private final ObjectMapper objectMapper;
 
-    public OutboxRelay(OutboxRepository outboxRepository, RabbitTemplate rabbitTemplate, org.example.orderservice.controller.ChaosContext chaosContext, com.fasterxml.jackson.databind.ObjectMapper objectMapper) {
+    public OutboxRelay(OutboxRepository outboxRepository,
+                       RabbitTemplate rabbitTemplate,
+                       ChaosContext chaosContext,
+                       ObjectMapper objectMapper) {
         this.outboxRepository = outboxRepository;
         this.rabbitTemplate = rabbitTemplate;
         this.chaosContext = chaosContext;
         this.objectMapper = objectMapper;
-        
+
         this.rabbitTemplate.setConfirmCallback((correlationData, ack, cause) -> {
             if (ack && correlationData != null) {
                 Long id = Long.valueOf(correlationData.getId());
                 updateStatus(id, OutboxEvent.OutboxStatus.PROCESSED);
-                logger.info("Message {} successfully published and acked", id);
+                logger.info("Event {} acked by broker", id);
             } else if (correlationData != null) {
-                Long id = Long.valueOf(correlationData.getId());
-                logger.error("Message {} failed to publish: {}", id, cause);
-                // Optionally retry or mark as FAILED
+                logger.error("Event {} failed to publish: {}", correlationData.getId(), cause);
             }
         });
     }
@@ -49,60 +54,47 @@ public class OutboxRelay {
 
     @Scheduled(fixedDelay = 5000)
     public void relayEvents() {
-        List<OutboxEvent> pendingEvents = outboxRepository.findByStatus(OutboxEvent.OutboxStatus.PENDING);
-        for (OutboxEvent event : pendingEvents) {
+        List<OutboxEvent> pending = outboxRepository.findByStatus(OutboxEvent.OutboxStatus.PENDING);
+        for (OutboxEvent event : pending) {
             try {
-                String payload = event.getPayload();
-                var scenario = chaosContext.getCurrentScenario();
-                
-                if (scenario == org.example.orderservice.controller.ChaosScenario.DATA_CORRUPTION) {
-                    payload = "{\"corrupted\": \"true\", \"quantity\": -99}";
-                    logger.warn("Chaos: Corrupting payload for event {}", event.getEventId());
+                ChaosScenario scenario = chaosContext.getCurrentScenario();
+                CorrelationData correlationData = new CorrelationData(event.getId().toString());
+
+                Object payload;
+                if (scenario == ChaosScenario.DATA_CORRUPTION) {
+                    payload = "{\"corrupted\": true, \"quantity\": -99}";
+                    logger.warn("Chaos: corrupting payload for event {}", event.getEventId());
+                } else {
+                    payload = objectMapper.readValue(event.getPayload(), TicketOrderPlacedEvent.class);
                 }
 
-                logger.info("Outbox Recovery: Relaying pending event {} (Aggregate ID: {})", event.getEventId(), event.getAggregateId());
-                logger.debug("Relaying event: {} with scenario {}", event.getEventId(), scenario);
-                CorrelationData correlationData = new CorrelationData(event.getId().toString());
-                
-                Object messagePayload = event.getPayload();
-                if (scenario != org.example.orderservice.controller.ChaosScenario.DATA_CORRUPTION) {
-                    try {
-                        messagePayload = objectMapper.readValue(event.getPayload(), org.example.event.OrderPlacedEvent.class);
-                    } catch (Exception e) {
-                        logger.error("Failed to parse payload for event {}: {}", event.getEventId(), e.getMessage());
-                    }
-                } else {
-                    payload = "{\"corrupted\": \"true\", \"quantity\": -99}";
-                    messagePayload = payload;
-                    logger.warn("Chaos: Corrupting payload for event {}", event.getEventId());
-                }
+                logger.info("Relaying outbox event {} (order {})", event.getEventId(), event.getAggregateId());
 
                 rabbitTemplate.convertAndSend(
-                    RabbitConfig.EXCHANGE_NAME,
-                    "order.placed",
-                    messagePayload,
-                    message -> {
-                        message.getMessageProperties().setHeader("X-Sender-App", "OrderService");
-                        message.getMessageProperties().setHeader("X-Auth-Token", "d2lkZ2V0X3NlY3JldF90b2tlbg==");
-                        return message;
-                    },
-                    correlationData
-                );
-
-                if (scenario == org.example.orderservice.controller.ChaosScenario.DUPLICATE_MESSAGE) {
-                    logger.warn("Chaos: Sending duplicate message for event {}", event.getEventId());
-                    rabbitTemplate.convertAndSend(
                         RabbitConfig.EXCHANGE_NAME,
-                        "order.placed",
-                        messagePayload,
-                        message -> {
-                            message.getMessageProperties().setHeader("X-Sender-App", "OrderService");
-                            message.getMessageProperties().setHeader("X-Auth-Token", "d2lkZ2V0X3NlY3JldF90b2tlbg==");
-                            return message;
+                        "ticket.order.placed",
+                        payload,
+                        msg -> {
+                            msg.getMessageProperties().setHeader("X-Sender-App", "OrderService");
+                            return msg;
                         },
                         correlationData
+                );
+
+                if (scenario == ChaosScenario.DUPLICATE_MESSAGE) {
+                    logger.warn("Chaos: sending duplicate for event {}", event.getEventId());
+                    rabbitTemplate.convertAndSend(
+                            RabbitConfig.EXCHANGE_NAME,
+                            "ticket.order.placed",
+                            payload,
+                            msg -> {
+                                msg.getMessageProperties().setHeader("X-Sender-App", "OrderService");
+                                return msg;
+                            },
+                            correlationData
                     );
                 }
+
             } catch (Exception e) {
                 logger.error("Error relaying event {}: {}", event.getId(), e.getMessage());
             }

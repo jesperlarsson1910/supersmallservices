@@ -2,11 +2,11 @@ package org.example.orderservice.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.example.event.OrderPlacedEvent;
-import org.example.orderservice.model.Order;
+import org.example.event.TicketOrderPlacedEvent;
 import org.example.orderservice.model.OutboxEvent;
-import org.example.orderservice.repository.OrderRepository;
+import org.example.orderservice.model.TicketOrder;
 import org.example.orderservice.repository.OutboxRepository;
+import org.example.orderservice.repository.TicketOrderRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,44 +14,57 @@ import java.util.UUID;
 
 @Service
 public class OrderService {
-    private final OrderRepository orderRepository;
+
+    private final TicketOrderRepository orderRepository;
     private final OutboxRepository outboxRepository;
     private final ObjectMapper objectMapper;
 
-    public OrderService(OrderRepository orderRepository, OutboxRepository outboxRepository, ObjectMapper objectMapper) {
+    public OrderService(TicketOrderRepository orderRepository,
+                        OutboxRepository outboxRepository,
+                        ObjectMapper objectMapper) {
         this.orderRepository = orderRepository;
         this.outboxRepository = outboxRepository;
         this.objectMapper = objectMapper;
     }
 
     @Transactional
-    public Order placeOrder(Order order) throws JsonProcessingException {
-        Order savedOrder = orderRepository.save(order);
-        
-        OrderPlacedEvent event = new OrderPlacedEvent(
-            UUID.randomUUID(),
-            savedOrder.getId(),
-            savedOrder.getProduct(),
-            savedOrder.getQuantity(),
-            savedOrder.getPrice()
+    public TicketOrder placeOrder(TicketOrder order) throws JsonProcessingException {
+        TicketOrder saved = orderRepository.save(order);
+
+        TicketOrderPlacedEvent event = new TicketOrderPlacedEvent(
+                UUID.randomUUID(),
+                saved.getId(),
+                saved.getTicketEventId(),
+                saved.getSeatId(),
+                saved.getQuantity(),
+                saved.getTotalPrice()
         );
-        
+
         String payload = objectMapper.writeValueAsString(event);
-        
+
         OutboxEvent outboxEvent = new OutboxEvent(
-            event.eventId(),
-            "ORDER",
-            savedOrder.getId(),
-            "ORDER_PLACED",
-            payload
+                event.eventId(),
+                "TICKET_ORDER",
+                saved.getId(),
+                "TICKET_ORDER_PLACED",
+                payload
         );
-        
+
         outboxRepository.save(outboxEvent);
-        
-        return savedOrder;
+
+        return saved;
     }
 
-    public Order getOrder(Long id) {
-        return orderRepository.findById(id).orElseThrow(() -> new RuntimeException("Order not found"));
+    @Transactional
+    public void cancelOrder(Long orderId) {
+        orderRepository.findById(orderId).ifPresent(order -> {
+            order.setStatus(TicketOrder.OrderStatus.CANCELLED_EXPIRED);
+            orderRepository.save(order);
+        });
+    }
+
+    public TicketOrder getOrder(Long id) {
+        return orderRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Order not found: " + id));
     }
 }
