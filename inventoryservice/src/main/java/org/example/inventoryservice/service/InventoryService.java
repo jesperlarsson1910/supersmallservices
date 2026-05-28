@@ -1,104 +1,136 @@
 package org.example.inventoryservice.service;
 
-import org.example.inventoryservice.controller.ChaosContext;
-import org.example.inventoryservice.controller.ChaosScenario;
-import org.example.event.TicketOrderPlacedEvent;
 import org.example.event.SeatsReservationFailedEvent;
 import org.example.event.SeatsReservedEvent;
+import org.example.event.SeatHoldExpiredEvent;
+import org.example.event.TicketOrderPlacedEvent;
+import org.example.inventoryservice.config.RabbitConfig;
+import org.example.inventoryservice.model.ProcessedEvent;
 import org.example.inventoryservice.model.Seat;
 import org.example.inventoryservice.repository.ProcessedEventRepository;
 import org.example.inventoryservice.repository.SeatRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.UUID;
+
 @Service
 public class InventoryService {
-    private static final Logger logger = LoggerFactory.getLogger(InventoryService.class);
-    private final SeatRepository stockRepository;
-    private final ProcessedEventRepository processedEventRepository;
-    private final ChaosContext chaosContext;
-    private final org.springframework.amqp.rabbit.core.RabbitTemplate rabbitTemplate;
 
-    public InventoryService(SeatRepository stockRepository, ProcessedEventRepository processedEventRepository, ChaosContext chaosContext, org.springframework.amqp.rabbit.core.RabbitTemplate rabbitTemplate) {
-        this.stockRepository = stockRepository;
+    private static final Logger logger = LoggerFactory.getLogger(InventoryService.class);
+    private static final int HOLD_MINUTES = 15;
+
+    private final SeatRepository seatRepository;
+    private final ProcessedEventRepository processedEventRepository;
+    private final RabbitTemplate rabbitTemplate;
+
+    public InventoryService(SeatRepository seatRepository,
+                            ProcessedEventRepository processedEventRepository,
+                            RabbitTemplate rabbitTemplate) {
+        this.seatRepository = seatRepository;
         this.processedEventRepository = processedEventRepository;
-        this.chaosContext = chaosContext;
         this.rabbitTemplate = rabbitTemplate;
     }
 
     @Transactional
     public void processOrder(TicketOrderPlacedEvent event) {
-        logger.info("Processing event: {}", event);
+        logger.info("Processing ticket order event: {}", event.eventId());
 
-        // 1. Check Idempotency
+        // Idempotency check — same as the original StockService
         if (processedEventRepository.existsById(event.eventId())) {
-            logger.info("Event {} already processed. Skipping to ensure idempotency.", event.eventId());
+            logger.info("Event {} already processed, skipping", event.eventId());
             return;
         }
 
-        // 2. Handle Chaos Scenarios
-        handleChaos(event);
+        Seat seat = seatRepository.findById(event.seatId()).orElse(null);
 
-        // 3. Business Logic
-        Seat stock = stockRepository.findById(event.product())
-                .orElse(new Seat(event.product(), 100)); // Default 100 if not exists
-        
-        if (event.quantity() < 0) {
-            throw new IllegalArgumentException("Chaos: Negative quantity detected for event " + event.eventId());
-        }
+        if (seat == null || seat.getStatus() != Seat.SeatStatus.AVAILABLE) {
+            logger.warn("Seat {} unavailable for order {}", event.seatId(), event.orderId());
 
-        if (stock.getQuantity() < event.quantity()) {
-            logger.warn("Insufficient stock for product {}. Required: {}, Available: {}", event.product(), event.quantity(), stock.getQuantity());
-            
-            // Compensating Action: Publish Failure Event
-            SeatsReservationFailedEvent failedEvent = new SeatsReservationFailedEvent(
-                java.util.UUID.randomUUID(),
-                event.orderId(),
-                "OUT_OF_STOCK"
-            );
-            
             rabbitTemplate.convertAndSend(
-                org.example.inventoryservice.config.RabbitConfig.STOCK_FAILED_EXCHANGE,
-                "stock.reservation.failed",
-                failedEvent
+                    RabbitConfig.EXCHANGE_NAME,
+                    "seats.reservation.failed",
+                    new SeatsReservationFailedEvent(UUID.randomUUID(), event.orderId(), "SEAT_UNAVAILABLE")
             );
-            
-            // Still mark the event as processed to avoid retrying a known failure
-            processedEventRepository.save(new org.example.inventoryservice.model.ProcessedEvent(event.eventId()));
+
+            processedEventRepository.save(new ProcessedEvent(event.eventId()));
             return;
         }
 
-        stock.setQuantity(stock.getQuantity() - event.quantity());
-        stockRepository.save(stock);
-
-        // Success: Publish StockReservedEvent
-        SeatsReservedEvent reservedEvent = new SeatsReservedEvent(
-            java.util.UUID.randomUUID(),
-            event.orderId()
-        );
+        // Place hold with TTL
+        seat.setStatus(Seat.SeatStatus.HELD);
+        seat.setHeldByOrderId(event.orderId());
+        seat.setHoldExpiresAt(LocalDateTime.now().plusMinutes(HOLD_MINUTES));
+        seatRepository.save(seat);
 
         rabbitTemplate.convertAndSend(
-            org.example.inventoryservice.config.RabbitConfig.STOCK_FAILED_EXCHANGE,
-            "stock.reserved",
-            reservedEvent
+                RabbitConfig.EXCHANGE_NAME,
+                "seats.reserved",
+                new SeatsReservedEvent(UUID.randomUUID(), event.orderId())
         );
 
-        // 4. Mark as processed
-        processedEventRepository.save(new org.example.inventoryservice.model.ProcessedEvent(event.eventId()));
-        logger.info("Successfully processed event {}", event.eventId());
+        processedEventRepository.save(new ProcessedEvent(event.eventId()));
+        logger.info("Seat {} held for order {} until {}", seat.getId(), event.orderId(), seat.getHoldExpiresAt());
     }
 
-    private void handleChaos(TicketOrderPlacedEvent event) {
-        ChaosScenario scenario = chaosContext.getCurrentScenario();
-        
-        if (scenario == ChaosScenario.TRANSIENT_FAILURE) {
-            int attempt = chaosContext.incrementAndGetAttempt(event.eventId());
-            if (attempt <= 2) {
-                logger.warn("Chaos: Simulating transient failure (attempt {}) for event {}", attempt, event.eventId());
-                throw new RuntimeException("Chaos: Transient failure");
-            }
+    // Called by BFF/order-service when payment is confirmed
+    @Transactional
+    public void confirmSeat(Long seatId) {
+        seatRepository.findById(seatId).ifPresent(seat -> {
+            seat.setStatus(Seat.SeatStatus.SOLD);
+            seat.setHoldExpiresAt(null);
+            seatRepository.save(seat);
+            logger.info("Seat {} marked as SOLD", seatId);
+        });
+    }
+
+    // Called by BFF/order-service to release a held seat
+    @Transactional
+    public void releaseSeat(Long seatId) {
+        seatRepository.findById(seatId).ifPresent(seat -> {
+            seat.setStatus(Seat.SeatStatus.AVAILABLE);
+            seat.setHeldByOrderId(null);
+            seat.setHoldExpiresAt(null);
+            seatRepository.save(seat);
+            logger.info("Seat {} released back to AVAILABLE", seatId);
+        });
+    }
+
+    // Runs every minute — publishes seat.hold.expired for bot service to consume
+    @Scheduled(fixedDelay = 60_000)
+    @Transactional
+    public void expireHeldSeats() {
+        List<Seat> expiredSeats = seatRepository.findByStatusAndHoldExpiresAtBefore(
+                Seat.SeatStatus.HELD, LocalDateTime.now()
+        );
+
+        for (Seat seat : expiredSeats) {
+            logger.warn("Hold expired for seat {} (order {})", seat.getId(), seat.getHeldByOrderId());
+
+            rabbitTemplate.convertAndSend(
+                    RabbitConfig.EXCHANGE_NAME,
+                    "seat.hold.expired",
+                    new SeatHoldExpiredEvent(UUID.randomUUID(), seat.getId(), seat.getHeldByOrderId())
+            );
+
+            seat.setStatus(Seat.SeatStatus.AVAILABLE);
+            seat.setHeldByOrderId(null);
+            seat.setHoldExpiresAt(null);
+            seatRepository.save(seat);
         }
+
+        if (!expiredSeats.isEmpty()) {
+            logger.info("Released {} expired seat holds", expiredSeats.size());
+        }
+    }
+
+    public List<Seat> getAvailableSeats(Long ticketEventId) {
+        return seatRepository.findByTicketEventIdAndStatus(ticketEventId, Seat.SeatStatus.AVAILABLE);
     }
 }

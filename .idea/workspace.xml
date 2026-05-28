@@ -5,39 +5,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="be28081d-fe39-40a5-9b79-d8f65e2c48ba" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/prettier.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/inventoryservice/inventoryservice.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/inventoryservice/src/main/java/org/example/event/SeatHoldExpiredEvent.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/inventoryservice/src/main/java/org/example/inventoryservice/repository/SeatRepository.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/eventservice/Dockerfile" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/eventservice/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/authservice/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/authservice/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inventoryservice/src/main/java/org/example/event/OrderPlacedEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/inventoryservice/src/main/java/org/example/event/TicketOrderPlacedEvent.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inventoryservice/src/main/java/org/example/event/StockReservationFailedEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/inventoryservice/src/main/java/org/example/event/SeatsReservationFailedEvent.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inventoryservice/src/main/java/org/example/event/StockReservedEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/inventoryservice/src/main/java/org/example/event/SeatsReservedEvent.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inventoryservice/src/main/java/org/example/stockservice/StockServiceApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/inventoryservice/src/main/java/org/example/inventoryservice/InventoryServiceApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inventoryservice/src/main/java/org/example/stockservice/config/DataInitializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/inventoryservice/src/main/java/org/example/inventoryservice/config/DataInitializer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inventoryservice/src/main/java/org/example/stockservice/config/RabbitConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/inventoryservice/src/main/java/org/example/inventoryservice/config/RabbitConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inventoryservice/src/main/java/org/example/stockservice/controller/ChaosContext.java" beforeDir="false" afterPath="$PROJECT_DIR$/inventoryservice/src/main/java/org/example/inventoryservice/controller/ChaosContext.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inventoryservice/src/main/java/org/example/stockservice/controller/ChaosController.java" beforeDir="false" afterPath="$PROJECT_DIR$/inventoryservice/src/main/java/org/example/inventoryservice/controller/ChaosController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inventoryservice/src/main/java/org/example/stockservice/controller/ChaosScenario.java" beforeDir="false" afterPath="$PROJECT_DIR$/inventoryservice/src/main/java/org/example/inventoryservice/controller/ChaosScenario.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inventoryservice/src/main/java/org/example/stockservice/controller/StockController.java" beforeDir="false" afterPath="$PROJECT_DIR$/inventoryservice/src/main/java/org/example/inventoryservice/controller/InventoryController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inventoryservice/src/main/java/org/example/stockservice/model/ProcessedEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/inventoryservice/src/main/java/org/example/inventoryservice/model/ProcessedEvent.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inventoryservice/src/main/java/org/example/stockservice/model/Stock.java" beforeDir="false" afterPath="$PROJECT_DIR$/inventoryservice/src/main/java/org/example/inventoryservice/model/Seat.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inventoryservice/src/main/java/org/example/stockservice/repository/ProcessedEventRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/inventoryservice/src/main/java/org/example/inventoryservice/repository/ProcessedEventRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inventoryservice/src/main/java/org/example/stockservice/repository/StockRepository.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/inventoryservice/src/main/java/org/example/stockservice/service/StockListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/inventoryservice/src/main/java/org/example/inventoryservice/service/InventoryListener.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inventoryservice/src/main/java/org/example/stockservice/service/StockService.java" beforeDir="false" afterPath="$PROJECT_DIR$/inventoryservice/src/main/java/org/example/inventoryservice/service/InventoryService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventoryservice/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/inventoryservice/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventoryservice/src/main/java/org/example/inventoryservice/service/InventoryListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/inventoryservice/src/main/java/org/example/inventoryservice/service/InventoryListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventoryservice/src/main/java/org/example/inventoryservice/service/InventoryService.java" beforeDir="false" afterPath="$PROJECT_DIR$/inventoryservice/src/main/java/org/example/inventoryservice/service/InventoryService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/inventoryservice/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/inventoryservice/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/orderservice/src/main/java/org/example/event/SeatsReservationFailedEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/orderservice/src/main/java/org/example/event/SeatsReservationFailedEvent.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/orderservice/src/main/java/org/example/event/SeatsReservedEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/orderservice/src/main/java/org/example/event/SeatsReservedEvent.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/orderservice/src/main/java/org/example/orderservice/config/RabbitConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/orderservice/src/main/java/org/example/orderservice/config/RabbitConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/orderservice/src/main/java/org/example/orderservice/controller/OrderController.java" beforeDir="false" afterPath="$PROJECT_DIR$/orderservice/src/main/java/org/example/orderservice/controller/OrderController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/orderservice/src/main/java/org/example/orderservice/repository/TicketOrderRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/orderservice/src/main/java/org/example/orderservice/repository/TicketOrderRepository.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/orderservice/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/orderservice/src/main/resources/application.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -103,29 +82,35 @@
   <component name="ProjectViewState">
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "main",
-    "ignore.virus.scanning.warn.message": "true",
-    "kotlin-language-version-configured": "true",
-    "node.js.detected.package.eslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "Modules",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.2",
-    "run.configurations.included.in.services": "true",
-    "settings.editor.selected.configurable": "settings.javascript.prettier",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/ITHS-VM/IdeaProjects/supersmallservices/eventservice/src/test/java/org/example/eventservice&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;run.configurations.included.in.services&quot;: &quot;true&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;settings.javascript.prettier&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\ITHS-VM\IdeaProjects\supersmallservices\eventservice\src\test\java\org\example\eventservice" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\ITHS-VM\IdeaProjects\supersmallservices\eventservice" />
+      <recent name="C:\Users\ITHS-VM\IdeaProjects\supersmallservices" />
       <recent name="C:\Users\ITHS-VM\IdeaProjects\supersmallservices\inventoryservice\src\main\java\org\example\event" />
     </key>
   </component>
@@ -140,6 +125,13 @@
     </option>
   </component>
   <component name="RunManager" selected="Spring Boot.BffApplication">
+    <configuration name="AuthserviceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="authservice" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="org.example.authservice.AuthserviceApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="BffApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
       <module name="bff" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="org.example.bff.BffApplication" />
@@ -147,8 +139,29 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="EventServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="eventservice" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="org.example.eventservice.EventServiceApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="EventserviceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="eventservice" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="org.example.eventservice.EventserviceApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="InventoryServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="inventoryservice" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="org.example.inventoryservice.InventoryServiceApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="InventorykServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
-      <module name="stockservice" />
+      <module name="inventoryservice" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="org.example.inventoryservice.InventorykServiceApplication" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -182,6 +195,9 @@
       <workItem from="1779908304035" duration="193000" />
       <workItem from="1779908502760" duration="105000" />
       <workItem from="1779962771408" duration="3958000" />
+      <workItem from="1779968674854" duration="134000" />
+      <workItem from="1779968831244" duration="3695000" />
+      <workItem from="1779976145683" duration="341000" />
     </task>
     <servers />
   </component>
