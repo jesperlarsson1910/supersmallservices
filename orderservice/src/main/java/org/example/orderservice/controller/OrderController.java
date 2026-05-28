@@ -1,13 +1,15 @@
 package org.example.orderservice.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import org.example.orderservice.model.Order;
+import org.example.orderservice.model.TicketOrder;
 import org.example.orderservice.service.OrderService;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/orders")
 public class OrderController {
+
     private final OrderService orderService;
     private final ChaosContext chaosContext;
 
@@ -17,18 +19,25 @@ public class OrderController {
     }
 
     @PostMapping
-    public Order placeOrder(@RequestBody Order order) throws JsonProcessingException {
-        Order savedOrder = orderService.placeOrder(order);
-        
+    @ResponseStatus(HttpStatus.CREATED)
+    public TicketOrder placeOrder(@RequestBody TicketOrder order) throws JsonProcessingException {
+        TicketOrder saved = orderService.placeOrder(order);
+
         if (chaosContext.getCurrentScenario() == ChaosScenario.FAIL_BEFORE_PUBLISH) {
-            throw new RuntimeException("Chaos: Failing before publish (simulating crash after save)");
+            throw new RuntimeException("Chaos: crash after save, before publish");
         }
-        
-        return savedOrder;
+
+        return saved;
     }
 
     @GetMapping("/{id}")
-    public Order getOrder(@PathVariable Long id) {
+    public TicketOrder getOrder(@PathVariable Long id) {
         return orderService.getOrder(id);
+    }
+
+    @DeleteMapping("/{id}/cancel")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void cancelOrder(@PathVariable Long id) {
+        orderService.cancelOrder(id);
     }
 }

@@ -1,28 +1,27 @@
-package org.example.stockservice.service;
+package org.example.inventoryservice.service;
 
-import org.example.stockservice.controller.ChaosContext;
-import org.example.stockservice.controller.ChaosScenario;
-import org.example.event.OrderPlacedEvent;
-import org.example.event.StockReservationFailedEvent;
-import org.example.event.StockReservedEvent;
-import org.example.stockservice.model.ProcessedEvent;
-import org.example.stockservice.model.Stock;
-import org.example.stockservice.repository.ProcessedEventRepository;
-import org.example.stockservice.repository.StockRepository;
+import org.example.inventoryservice.controller.ChaosContext;
+import org.example.inventoryservice.controller.ChaosScenario;
+import org.example.event.TicketOrderPlacedEvent;
+import org.example.event.SeatsReservationFailedEvent;
+import org.example.event.SeatsReservedEvent;
+import org.example.inventoryservice.model.Seat;
+import org.example.inventoryservice.repository.ProcessedEventRepository;
+import org.example.inventoryservice.repository.SeatRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class StockService {
-    private static final Logger logger = LoggerFactory.getLogger(StockService.class);
-    private final StockRepository stockRepository;
+public class InventoryService {
+    private static final Logger logger = LoggerFactory.getLogger(InventoryService.class);
+    private final SeatRepository stockRepository;
     private final ProcessedEventRepository processedEventRepository;
     private final ChaosContext chaosContext;
     private final org.springframework.amqp.rabbit.core.RabbitTemplate rabbitTemplate;
 
-    public StockService(StockRepository stockRepository, ProcessedEventRepository processedEventRepository, ChaosContext chaosContext, org.springframework.amqp.rabbit.core.RabbitTemplate rabbitTemplate) {
+    public InventoryService(SeatRepository stockRepository, ProcessedEventRepository processedEventRepository, ChaosContext chaosContext, org.springframework.amqp.rabbit.core.RabbitTemplate rabbitTemplate) {
         this.stockRepository = stockRepository;
         this.processedEventRepository = processedEventRepository;
         this.chaosContext = chaosContext;
@@ -30,7 +29,7 @@ public class StockService {
     }
 
     @Transactional
-    public void processOrder(OrderPlacedEvent event) {
+    public void processOrder(TicketOrderPlacedEvent event) {
         logger.info("Processing event: {}", event);
 
         // 1. Check Idempotency
@@ -43,8 +42,8 @@ public class StockService {
         handleChaos(event);
 
         // 3. Business Logic
-        Stock stock = stockRepository.findById(event.product())
-                .orElse(new Stock(event.product(), 100)); // Default 100 if not exists
+        Seat stock = stockRepository.findById(event.product())
+                .orElse(new Seat(event.product(), 100)); // Default 100 if not exists
         
         if (event.quantity() < 0) {
             throw new IllegalArgumentException("Chaos: Negative quantity detected for event " + event.eventId());
@@ -54,20 +53,20 @@ public class StockService {
             logger.warn("Insufficient stock for product {}. Required: {}, Available: {}", event.product(), event.quantity(), stock.getQuantity());
             
             // Compensating Action: Publish Failure Event
-            StockReservationFailedEvent failedEvent = new StockReservationFailedEvent(
+            SeatsReservationFailedEvent failedEvent = new SeatsReservationFailedEvent(
                 java.util.UUID.randomUUID(),
                 event.orderId(),
                 "OUT_OF_STOCK"
             );
             
             rabbitTemplate.convertAndSend(
-                org.example.stockservice.config.RabbitConfig.STOCK_FAILED_EXCHANGE,
+                org.example.inventoryservice.config.RabbitConfig.STOCK_FAILED_EXCHANGE,
                 "stock.reservation.failed",
                 failedEvent
             );
             
             // Still mark the event as processed to avoid retrying a known failure
-            processedEventRepository.save(new org.example.stockservice.model.ProcessedEvent(event.eventId()));
+            processedEventRepository.save(new org.example.inventoryservice.model.ProcessedEvent(event.eventId()));
             return;
         }
 
@@ -75,23 +74,23 @@ public class StockService {
         stockRepository.save(stock);
 
         // Success: Publish StockReservedEvent
-        StockReservedEvent reservedEvent = new StockReservedEvent(
+        SeatsReservedEvent reservedEvent = new SeatsReservedEvent(
             java.util.UUID.randomUUID(),
             event.orderId()
         );
 
         rabbitTemplate.convertAndSend(
-            org.example.stockservice.config.RabbitConfig.STOCK_FAILED_EXCHANGE,
+            org.example.inventoryservice.config.RabbitConfig.STOCK_FAILED_EXCHANGE,
             "stock.reserved",
             reservedEvent
         );
 
         // 4. Mark as processed
-        processedEventRepository.save(new org.example.stockservice.model.ProcessedEvent(event.eventId()));
+        processedEventRepository.save(new org.example.inventoryservice.model.ProcessedEvent(event.eventId()));
         logger.info("Successfully processed event {}", event.eventId());
     }
 
-    private void handleChaos(OrderPlacedEvent event) {
+    private void handleChaos(TicketOrderPlacedEvent event) {
         ChaosScenario scenario = chaosContext.getCurrentScenario();
         
         if (scenario == ChaosScenario.TRANSIENT_FAILURE) {

@@ -1,4 +1,4 @@
-package org.example.stockservice.controller;
+package org.example.inventoryservice.controller;
 
 public enum ChaosScenario {
     NORMAL,

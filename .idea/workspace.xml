@@ -5,34 +5,100 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="be28081d-fe39-40a5-9b79-d8f65e2c48ba" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/orderservice/src/main/java/org/example/event/OrderPlacedEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/orderservice/src/main/java/org/example/event/TicketOrderPlacedEvent.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/orderservice/src/main/java/org/example/event/StockReservationFailedEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/orderservice/src/main/java/org/example/event/SeatsReservationFailedEvent.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/orderservice/src/main/java/org/example/event/StockReservedEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/orderservice/src/main/java/org/example/event/SeatsReservedEvent.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/prettier.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/inventoryservice/inventoryservice.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/inventoryservice/src/main/java/org/example/event/SeatHoldExpiredEvent.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/inventoryservice/src/main/java/org/example/inventoryservice/repository/SeatRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/authservice/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/authservice/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventoryservice/src/main/java/org/example/event/OrderPlacedEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/inventoryservice/src/main/java/org/example/event/TicketOrderPlacedEvent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventoryservice/src/main/java/org/example/event/StockReservationFailedEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/inventoryservice/src/main/java/org/example/event/SeatsReservationFailedEvent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventoryservice/src/main/java/org/example/event/StockReservedEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/inventoryservice/src/main/java/org/example/event/SeatsReservedEvent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventoryservice/src/main/java/org/example/stockservice/StockServiceApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/inventoryservice/src/main/java/org/example/inventoryservice/InventoryServiceApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventoryservice/src/main/java/org/example/stockservice/config/DataInitializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/inventoryservice/src/main/java/org/example/inventoryservice/config/DataInitializer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventoryservice/src/main/java/org/example/stockservice/config/RabbitConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/inventoryservice/src/main/java/org/example/inventoryservice/config/RabbitConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventoryservice/src/main/java/org/example/stockservice/controller/ChaosContext.java" beforeDir="false" afterPath="$PROJECT_DIR$/inventoryservice/src/main/java/org/example/inventoryservice/controller/ChaosContext.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventoryservice/src/main/java/org/example/stockservice/controller/ChaosController.java" beforeDir="false" afterPath="$PROJECT_DIR$/inventoryservice/src/main/java/org/example/inventoryservice/controller/ChaosController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventoryservice/src/main/java/org/example/stockservice/controller/ChaosScenario.java" beforeDir="false" afterPath="$PROJECT_DIR$/inventoryservice/src/main/java/org/example/inventoryservice/controller/ChaosScenario.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventoryservice/src/main/java/org/example/stockservice/controller/StockController.java" beforeDir="false" afterPath="$PROJECT_DIR$/inventoryservice/src/main/java/org/example/inventoryservice/controller/InventoryController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventoryservice/src/main/java/org/example/stockservice/model/ProcessedEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/inventoryservice/src/main/java/org/example/inventoryservice/model/ProcessedEvent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventoryservice/src/main/java/org/example/stockservice/model/Stock.java" beforeDir="false" afterPath="$PROJECT_DIR$/inventoryservice/src/main/java/org/example/inventoryservice/model/Seat.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventoryservice/src/main/java/org/example/stockservice/repository/ProcessedEventRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/inventoryservice/src/main/java/org/example/inventoryservice/repository/ProcessedEventRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventoryservice/src/main/java/org/example/stockservice/repository/StockRepository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventoryservice/src/main/java/org/example/stockservice/service/StockListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/inventoryservice/src/main/java/org/example/inventoryservice/service/InventoryListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventoryservice/src/main/java/org/example/stockservice/service/StockService.java" beforeDir="false" afterPath="$PROJECT_DIR$/inventoryservice/src/main/java/org/example/inventoryservice/service/InventoryService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventoryservice/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/inventoryservice/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/orderservice/src/main/java/org/example/event/SeatsReservationFailedEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/orderservice/src/main/java/org/example/event/SeatsReservationFailedEvent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/orderservice/src/main/java/org/example/event/SeatsReservedEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/orderservice/src/main/java/org/example/event/SeatsReservedEvent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/orderservice/src/main/java/org/example/orderservice/config/RabbitConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/orderservice/src/main/java/org/example/orderservice/config/RabbitConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/orderservice/src/main/java/org/example/orderservice/controller/OrderController.java" beforeDir="false" afterPath="$PROJECT_DIR$/orderservice/src/main/java/org/example/orderservice/controller/OrderController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/orderservice/src/main/java/org/example/orderservice/repository/TicketOrderRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/orderservice/src/main/java/org/example/orderservice/repository/TicketOrderRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/orderservice/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/orderservice/src/main/resources/application.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="ExternalProjectsData">
+    <projectState path="$PROJECT_DIR$/eventservice">
+      <ProjectState />
+    </projectState>
+  </component>
+  <component name="ExternalProjectsManager">
+    <system id="GRADLE">
+      <state>
+        <projects_view>
+          <tree_state>
+            <expand>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="eventservice" type="f1a62948:ProjectNode" />
+              </path>
+            </expand>
+            <select />
+          </tree_state>
+        </projects_view>
+      </state>
+    </system>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "jesperlarsson1910"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;jesperlarsson1910&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/jesperlarsson1910/supersmallservices.git",
-    "accountId": "84e9b36a-acc8-4a6a-a3a5-4bf45c1315e0"
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/jesperlarsson1910/supersmallservices.git&quot;,
+    &quot;accountId&quot;: &quot;84e9b36a-acc8-4a6a-a3a5-4bf45c1315e0&quot;
   }
-}]]></component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 5
-}]]></component>
+}</component>
+  <component name="KubernetesApiPersistence">{}</component>
+  <component name="KubernetesApiProvider">{
+  &quot;isMigrated&quot;: true
+}</component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="mavenHomeTypeForPersistence" value="WRAPPER" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
+  <component name="MavenRunner">
+    <option name="jreName" value="25" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 5
+}</component>
   <component name="ProjectId" id="3EJplFqCU3TkTCUZzIhBl98QoTU" />
   <component name="ProjectViewState">
     <option name="showLibraryContents" value="true" />
@@ -41,16 +107,61 @@
   "keyToString": {
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "git-widget-placeholder": "main",
     "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
+    "node.js.detected.package.eslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "preferences.keymap",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2",
+    "run.configurations.included.in.services": "true",
+    "settings.editor.selected.configurable": "settings.javascript.prettier",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\ITHS-VM\IdeaProjects\supersmallservices\inventoryservice\src\main\java\org\example\event" />
+    </key>
+  </component>
+  <component name="RunDashboard">
+    <option name="configurationTypes">
+      <set>
+        <option value="KtorApplicationConfigurationType" />
+        <option value="MicronautRunConfigurationType" />
+        <option value="QuarkusRunConfigurationType" />
+        <option value="SpringBootApplicationConfigurationType" />
+      </set>
+    </option>
+  </component>
+  <component name="RunManager" selected="Spring Boot.BffApplication">
+    <configuration name="BffApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="bff" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="org.example.bff.BffApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="InventorykServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="stockservice" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="org.example.inventoryservice.InventorykServiceApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="OrderServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="orderservice" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="org.example.orderservice.OrderServiceApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -66,11 +177,19 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1779906679692</updated>
-      <workItem from="1779906682091" duration="301000" />
+      <workItem from="1779906682091" duration="703000" />
+      <workItem from="1779907407356" duration="872000" />
+      <workItem from="1779908304035" duration="193000" />
+      <workItem from="1779908502760" duration="105000" />
+      <workItem from="1779962771408" duration="3958000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
   </component>
 </project>

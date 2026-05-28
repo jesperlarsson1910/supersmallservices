@@ -7,33 +7,43 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class RabbitConfig {
-    public static final String EXCHANGE_NAME = "order.exchange";
-    public static final String STOCK_FAILED_QUEUE = "stock.failed.queue";
-    public static final String STOCK_FAILED_EXCHANGE = "stock.failed.exchange";
+
+    // Outbound: order-service publishes here
+    public static final String EXCHANGE_NAME = "ticket.exchange";
+
+    // Inbound: order-service listens for saga results + hold-expiry
+    public static final String ORDER_RESULTS_QUEUE = "order.results.queue";
+    public static final String ORDER_RESULTS_EXCHANGE = "inventory.exchange";
 
     @Bean
-    public TopicExchange orderExchange() {
+    public TopicExchange ticketExchange() {
         return new TopicExchange(EXCHANGE_NAME);
     }
 
     @Bean
-    public Queue stockFailedQueue() {
-        return new Queue(STOCK_FAILED_QUEUE);
+    public TopicExchange inventoryExchange() {
+        return new TopicExchange(ORDER_RESULTS_EXCHANGE);
     }
 
     @Bean
-    public TopicExchange stockFailedExchange() {
-        return new TopicExchange(STOCK_FAILED_EXCHANGE);
+    public Queue orderResultsQueue() {
+        return QueueBuilder.durable(ORDER_RESULTS_QUEUE).build();
+    }
+
+    // Bind to seat reserved, seat reservation failed, and hold expired events
+    @Bean
+    public Binding seatsReservedBinding(Queue orderResultsQueue, TopicExchange inventoryExchange) {
+        return BindingBuilder.bind(orderResultsQueue).to(inventoryExchange).with("seats.reserved");
     }
 
     @Bean
-    public Binding stockFailedBinding(Queue stockFailedQueue, TopicExchange stockFailedExchange) {
-        return BindingBuilder.bind(stockFailedQueue).to(stockFailedExchange).with("stock.reservation.failed");
+    public Binding seatsFailedBinding(Queue orderResultsQueue, TopicExchange inventoryExchange) {
+        return BindingBuilder.bind(orderResultsQueue).to(inventoryExchange).with("seats.reservation.failed");
     }
 
     @Bean
-    public Binding stockReservedBinding(Queue stockFailedQueue, TopicExchange stockFailedExchange) {
-        return BindingBuilder.bind(stockFailedQueue).to(stockFailedExchange).with("stock.reserved");
+    public Binding holdExpiredBinding(Queue orderResultsQueue, TopicExchange inventoryExchange) {
+        return BindingBuilder.bind(orderResultsQueue).to(inventoryExchange).with("seat.hold.expired");
     }
 
     @Bean
