@@ -3,35 +3,69 @@ package org.example.orderservice.service;
 import org.example.event.SeatsReservationFailedEvent;
 import org.example.event.SeatsReservedEvent;
 import org.example.event.SeatHoldExpiredEvent;
+import org.example.event.TicketPurchasedEvent;
 import org.example.orderservice.model.TicketOrder;
 import org.example.orderservice.repository.TicketOrderRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.UUID;
 
 @Service
 @RabbitListener(queues = "order.results.queue")
 public class OrderSagaListener {
 
     private static final Logger logger = LoggerFactory.getLogger(OrderSagaListener.class);
-    private final TicketOrderRepository orderRepository;
 
-    public OrderSagaListener(TicketOrderRepository orderRepository) {
+    private final TicketOrderRepository orderRepository;
+    private final RabbitTemplate rabbitTemplate;
+
+    public OrderSagaListener(TicketOrderRepository orderRepository,
+                             RabbitTemplate rabbitTemplate) {
         this.orderRepository = orderRepository;
+        this.rabbitTemplate = rabbitTemplate;
     }
 
     @RabbitHandler
     @Transactional
     public void handleSeatsReserved(SeatsReservedEvent event) {
         logger.info("Seats reserved for order {}", event.orderId());
+
         orderRepository.findById(event.orderId()).ifPresentOrElse(
                 order -> {
                     order.setStatus(TicketOrder.OrderStatus.CONFIRMED);
                     orderRepository.save(order);
                     logger.info("Order {} confirmed", event.orderId());
+
+                    // Publish notification trigger
+                    TicketPurchasedEvent purchased = new TicketPurchasedEvent(
+                            UUID.randomUUID(),
+                            order.getId(),
+                            order.getUserId(),
+                            order.getTicketEventId(),
+                            null, // seat details fetched by notification-service if needed
+                            null,
+                            order.getQuantity(),
+                            order.getTotalPrice()
+                    );
+
+                    try {
+                        rabbitTemplate.convertAndSend(
+                                "ticket.exchange",
+                                "ticket.purchased",
+                                purchased
+                        );
+                        logger.info("Published TicketPurchasedEvent for order {}", order.getId());
+                    } catch (Exception e) {
+                        logger.error("Failed to publish TicketPurchasedEvent for order {}: {}", order.getId(), e.getMessage());
+                    }
+
+                    logger.info("Published TicketPurchasedEvent for order {}", order.getId());
                 },
                 () -> logger.error("Order {} not found during confirmation", event.orderId())
         );
@@ -41,6 +75,7 @@ public class OrderSagaListener {
     @Transactional
     public void handleSeatsReservationFailed(SeatsReservationFailedEvent event) {
         logger.warn("Seat reservation failed for order {}. Reason: {}", event.orderId(), event.reason());
+
         orderRepository.findById(event.orderId()).ifPresentOrElse(
                 order -> {
                     order.setStatus(TicketOrder.OrderStatus.CANCELLED_SEATS_UNAVAILABLE);
@@ -54,7 +89,8 @@ public class OrderSagaListener {
     @RabbitHandler
     @Transactional
     public void handleSeatHoldExpired(SeatHoldExpiredEvent event) {
-        logger.warn("Seat hold expired for order {}, seat {}", event.orderId(), event.seatId());
+        logger.warn("Seat hold expired for order {}", event.orderId());
+
         orderRepository.findById(event.orderId()).ifPresentOrElse(
                 order -> {
                     if (order.getStatus() == TicketOrder.OrderStatus.PENDING) {
@@ -63,7 +99,7 @@ public class OrderSagaListener {
                         logger.info("Order {} cancelled (hold expired)", event.orderId());
                     }
                 },
-                () -> logger.error("Order {} not found during hold-expiry cancellation", event.orderId())
+                () -> logger.error("Order {} not found during hold-expiry", event.orderId())
         );
     }
 

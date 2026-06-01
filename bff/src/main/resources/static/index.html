@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TIXR — Ticket Service</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg:       #0a0a0a;
+            --surface:  #111111;
+            --border:   #222222;
+            --accent:   #e8ff47;
+            --accent2:  #ff4747;
+            --text:     #f0f0f0;
+            --muted:    #666;
+            --radius:   6px;
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'DM Sans', sans-serif;
+            font-weight: 300;
+            min-height: 100vh;
+        }
+
+        /* ── NAV ── */
+        nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 40px;
+            border-bottom: 1px solid var(--border);
+            position: sticky; top: 0;
+            background: rgba(10,10,10,0.95);
+            backdrop-filter: blur(10px);
+            z-index: 100;
+        }
+        .logo {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 28px;
+            letter-spacing: 4px;
+            color: var(--accent);
+        }
+        .nav-right { display: flex; align-items: center; gap: 16px; }
+        #nav-user { font-size: 13px; color: var(--muted); font-family: 'DM Mono', monospace; }
+        #nav-logout {
+            font-size: 12px; color: var(--muted); background: none;
+            border: 1px solid var(--border); border-radius: var(--radius);
+            padding: 6px 14px; cursor: pointer; font-family: 'DM Sans', sans-serif;
+            transition: all .2s;
+        }
+        #nav-logout:hover { color: var(--accent2); border-color: var(--accent2); }
+
+        /* ── SCREENS ── */
+        .screen { display: none; padding: 60px 40px; max-width: 1000px; margin: 0 auto; }
+        .screen.active { display: block; animation: fadeUp .3s ease; }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(16px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ── LOGIN ── */
+        #screen-login {
+            max-width: 420px;
+            margin: 0 auto;
+            padding-top: 120px;
+        }
+        .login-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 64px;
+            letter-spacing: 6px;
+            line-height: 1;
+            color: var(--accent);
+            margin-bottom: 8px;
+        }
+        .login-sub {
+            color: var(--muted);
+            font-size: 13px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 48px;
+        }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+        input[type=text], input[type=password] {
+            width: 100%; padding: 14px 16px;
+            background: var(--surface); border: 1px solid var(--border);
+            border-radius: var(--radius); color: var(--text);
+            font-family: 'DM Mono', monospace; font-size: 14px;
+            outline: none; transition: border-color .2s;
+        }
+        input:focus { border-color: var(--accent); }
+        .login-hint { font-size: 11px; color: var(--muted); margin-top: 6px; font-family: 'DM Mono', monospace; }
+        .error-msg { color: var(--accent2); font-size: 13px; margin-top: 12px; min-height: 20px; }
+
+        /* ── BUTTONS ── */
+        .btn {
+            padding: 14px 28px; border: none; border-radius: var(--radius);
+            font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500;
+            cursor: pointer; transition: all .2s; letter-spacing: .5px;
+        }
+        .btn-primary {
+            background: var(--accent); color: #0a0a0a;
+            width: 100%; margin-top: 8px;
+        }
+        .btn-primary:hover { background: #f5ff70; transform: translateY(-1px); }
+        .btn-primary:active { transform: translateY(0); }
+        .btn-ghost {
+            background: none; color: var(--text);
+            border: 1px solid var(--border);
+        }
+        .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+        .btn-danger {
+            background: none; color: var(--accent2);
+            border: 1px solid var(--accent2); font-size: 12px; padding: 8px 16px;
+        }
+
+        /* ── EVENTS ── */
+        .page-header {
+            margin-bottom: 40px;
+            display: flex; align-items: baseline; justify-content: space-between;
+        }
+        .page-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 48px; letter-spacing: 4px; color: var(--text);
+        }
+        .page-count { font-size: 13px; color: var(--muted); font-family: 'DM Mono', monospace; }
+
+        .events-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .event-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 28px;
+            cursor: pointer;
+            transition: all .2s;
+            position: relative;
+            overflow: hidden;
+        }
+        .event-card::before {
+            content: '';
+            position: absolute; top: 0; left: 0; right: 0; height: 2px;
+            background: var(--accent);
+            transform: scaleX(0); transform-origin: left;
+            transition: transform .2s;
+        }
+        .event-card:hover { border-color: #333; transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0,0,0,.4); }
+        .event-card:hover::before { transform: scaleX(1); }
+
+        .event-status {
+            display: inline-block;
+            font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+            font-family: 'DM Mono', monospace;
+            padding: 4px 10px; border-radius: 100px;
+            margin-bottom: 16px;
+        }
+        .status-ON_SALE    { background: rgba(232,255,71,.12); color: var(--accent); border: 1px solid rgba(232,255,71,.3); }
+        .status-UPCOMING   { background: rgba(255,255,255,.06); color: var(--muted); border: 1px solid var(--border); }
+        .status-SOLD_OUT   { background: rgba(255,71,71,.12); color: var(--accent2); border: 1px solid rgba(255,71,71,.3); }
+        .status-CANCELLED  { background: rgba(255,71,71,.06); color: #666; border: 1px solid var(--border); }
+
+        .event-artist { font-family: 'Bebas Neue', sans-serif; font-size: 26px; letter-spacing: 2px; margin-bottom: 4px; }
+        .event-name   { font-size: 13px; color: var(--muted); margin-bottom: 20px; }
+        .event-meta   { display: flex; flex-direction: column; gap: 6px; }
+        .event-meta span { font-size: 12px; color: var(--muted); font-family: 'DM Mono', monospace; }
+        .event-meta span b { color: var(--text); font-weight: 400; }
+
+        /* ── SEATS ── */
+        .back-btn {
+            display: flex; align-items: center; gap: 8px;
+            background: none; border: none; color: var(--muted);
+            font-family: 'DM Sans', sans-serif; font-size: 13px;
+            cursor: pointer; margin-bottom: 32px; padding: 0;
+            transition: color .2s;
+        }
+        .back-btn:hover { color: var(--text); }
+
+        .event-hero {
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 32px;
+            margin-bottom: 40px;
+            background: var(--surface);
+            display: flex; justify-content: space-between; align-items: center;
+            flex-wrap: wrap; gap: 16px;
+        }
+        .event-hero-artist { font-family: 'Bebas Neue', sans-serif; font-size: 42px; letter-spacing: 3px; }
+        .event-hero-sub { color: var(--muted); font-size: 13px; margin-top: 4px; font-family: 'DM Mono', monospace; }
+
+        .seats-section { margin-bottom: 40px; }
+        .section-label {
+            font-size: 11px; letter-spacing: 3px; text-transform: uppercase;
+            color: var(--muted); margin-bottom: 16px;
+            padding-bottom: 12px; border-bottom: 1px solid var(--border);
+        }
+        .seats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 10px;
+        }
+        .seat-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 16px 12px;
+            cursor: pointer;
+            transition: all .15s;
+            text-align: center;
+        }
+        .seat-card:hover { border-color: var(--accent); background: rgba(232,255,71,.05); }
+        .seat-card.selected { border-color: var(--accent); background: rgba(232,255,71,.1); }
+        .seat-number { font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 1px; }
+        .seat-price  { font-size: 12px; color: var(--muted); font-family: 'DM Mono', monospace; margin-top: 4px; }
+
+        .no-seats { color: var(--muted); font-size: 14px; padding: 40px 0; text-align: center; }
+
+        /* ── ORDER SUMMARY ── */
+        .order-summary {
+            position: sticky; bottom: 0;
+            background: rgba(10,10,10,.97);
+            border-top: 1px solid var(--border);
+            padding: 20px 40px;
+            display: flex; align-items: center; justify-content: space-between;
+            gap: 20px;
+            backdrop-filter: blur(10px);
+        }
+        .order-summary.hidden { display: none; }
+        .summary-label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+        .summary-value { font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 2px; color: var(--accent); }
+        .summary-seat  { font-family: 'DM Mono', monospace; font-size: 13px; color: var(--text); }
+
+        /* ── CONFIRMATION ── */
+        .confirmation-card {
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 60px 48px;
+            text-align: center;
+            background: var(--surface);
+            max-width: 480px;
+            margin: 0 auto;
+        }
+        .confirm-icon {
+            font-size: 48px; margin-bottom: 24px;
+        }
+        .confirm-title {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 48px; letter-spacing: 4px; color: var(--accent);
+            margin-bottom: 8px;
+        }
+        .confirm-sub { color: var(--muted); font-size: 14px; margin-bottom: 40px; }
+        .confirm-detail {
+            display: flex; justify-content: space-between;
+            padding: 14px 0; border-bottom: 1px solid var(--border);
+            font-size: 14px;
+        }
+        .confirm-detail:last-of-type { border-bottom: none; }
+        .confirm-detail span:first-child { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: 1px; }
+        .confirm-detail span:last-child  { font-family: 'DM Mono', monospace; }
+
+        /* ── LOADING ── */
+        .loading {
+            display: flex; align-items: center; justify-content: center;
+            padding: 80px 0; color: var(--muted);
+            font-family: 'DM Mono', monospace; font-size: 13px;
+            gap: 10px;
+        }
+        .spinner {
+            width: 16px; height: 16px;
+            border: 2px solid var(--border);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin .6s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ── TOAST ── */
+        #toast {
+            position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%) translateY(20px);
+            background: var(--surface); border: 1px solid var(--border);
+            padding: 12px 24px; border-radius: 100px;
+            font-size: 13px; font-family: 'DM Mono', monospace;
+            opacity: 0; transition: all .3s; pointer-events: none; z-index: 999;
+        }
+        #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+        #toast.error { border-color: var(--accent2); color: var(--accent2); }
+
+        @media (max-width: 600px) {
+            nav { padding: 16px 20px; }
+            .screen { padding: 40px 20px; }
+            .order-summary { padding: 16px 20px; }
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <div class="logo">TIXR</div>
+    <div class="nav-right">
+        <span id="nav-user"></span>
+        <button id="nav-logout" style="display:none" onclick="logout()">Sign out</button>
+    </div>
+</nav>
+
+<!-- LOGIN -->
+<div id="screen-login" class="screen active">
+    <div class="login-title">TIXR</div>
+    <div class="login-sub">Your ticket to the show</div>
+    <div class="form-group">
+        <label>Username</label>
+        <input type="text" id="login-username" placeholder="demo" value="demo" autocomplete="username">
+        <div class="login-hint">demo / admin</div>
+    </div>
+    <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="login-password" placeholder="••••" value="demo" autocomplete="current-password">
+    </div>
+    <div class="error-msg" id="login-error"></div>
+    <button class="btn btn-primary" onclick="login()">Enter →</button>
+</div>
+
+<!-- EVENTS -->
+<div id="screen-events" class="screen">
+    <div class="page-header">
+        <div class="page-title">Events</div>
+        <div class="page-count" id="events-count"></div>
+    </div>
+    <div id="events-list"><div class="loading"><div class="spinner"></div>Loading events...</div></div>
+</div>
+
+<!-- SEATS -->
+<div id="screen-seats" class="screen">
+    <button class="back-btn" onclick="showEvents()">← Back to events</button>
+    <div class="event-hero" id="seats-hero"></div>
+    <div id="seats-content"></div>
+</div>
+
+<!-- CONFIRMATION -->
+<div id="screen-confirm" class="screen">
+    <div class="confirmation-card" id="confirm-card"></div>
+</div>
+
+<!-- ORDER SUMMARY BAR -->
+<div class="order-summary hidden" id="order-bar">
+    <div>
+        <div class="summary-label">Selected</div>
+        <div class="summary-seat" id="bar-seat"></div>
+    </div>
+    <div>
+        <div class="summary-label">Total</div>
+        <div class="summary-value" id="bar-price"></div>
+    </div>
+    <button class="btn btn-primary" style="width:auto" onclick="placeOrder()">Buy ticket →</button>
+</div>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<script>
+    const API = '';  // same origin — BFF serves both
+    let token = localStorage.getItem('tixr_token');
+    let currentUser = JSON.parse(localStorage.getItem('tixr_user') || 'null');
+    let selectedSeat = null;
+    let currentEvent = null;
+
+    // ── Init ──────────────────────────────────────────────────────────────────
+
+    if (token && currentUser) {
+        setNavUser(currentUser.username);
+        showEvents();
+    }
+
+    document.getElementById('login-password').addEventListener('keydown', e => {
+        if (e.key === 'Enter') login();
+    });
+
+    // ── Auth ──────────────────────────────────────────────────────────────────
+
+    async function login() {
+        const username = document.getElementById('login-username').value.trim();
+        const password = document.getElementById('login-password').value;
+        document.getElementById('login-error').textContent = '';
+
+        try {
+            const res = await fetch(`${API}/api/login`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password }),
+            });
+            if (!res.ok) throw new Error('Invalid credentials');
+            const data = await res.json();
+            token = data.token;
+            currentUser = { username: data.username, role: data.role };
+            localStorage.setItem('tixr_token', token);
+            localStorage.setItem('tixr_user', JSON.stringify(currentUser));
+            setNavUser(data.username);
+            showEvents();
+        } catch (e) {
+            document.getElementById('login-error').textContent = e.message;
+        }
+    }
+
+    function logout() {
+        token = null; currentUser = null;
+        localStorage.removeItem('tixr_token');
+        localStorage.removeItem('tixr_user');
+        setNavUser(null);
+        showScreen('login');
+    }
+
+    function setNavUser(username) {
+        document.getElementById('nav-user').textContent = username ? `@${username}` : '';
+        document.getElementById('nav-logout').style.display = username ? 'block' : 'none';
+    }
+
+    // ── API helper ────────────────────────────────────────────────────────────
+
+    async function api(method, path, body) {
+        const res = await fetch(`${API}${path}`, {
+            method,
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+            },
+            body: body ? JSON.stringify(body) : undefined,
+        });
+        if (res.status === 401) { logout(); return null; }
+        const text = await res.text();
+        try { return { ok: res.ok, status: res.status, data: JSON.parse(text) }; }
+        catch { return { ok: res.ok, status: res.status, data: text }; }
+    }
+
+    // ── Screens ───────────────────────────────────────────────────────────────
+
+    function showScreen(name) {
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById(`screen-${name}`).classList.add('active');
+        document.getElementById('order-bar').classList.add('hidden');
+    }
+
+    // ── Events ────────────────────────────────────────────────────────────────
+
+    async function showEvents() {
+        showScreen('events');
+        const list = document.getElementById('events-list');
+        list.innerHTML = '<div class="loading"><div class="spinner"></div>Loading events...</div>';
+
+        const result = await api('GET', '/api/events');
+        if (!result) return;
+
+        const events = result.data;
+        document.getElementById('events-count').textContent = `${events.length} events`;
+
+        if (!events.length) {
+            list.innerHTML = '<div class="no-seats">No events found.</div>';
+            return;
+        }
+
+        list.innerHTML = `
+      <div class="events-grid">
+        ${events.map(e => `
+          <div class="event-card" onclick='selectEvent(${JSON.stringify(e)})'>
+            <div class="event-status status-${e.status}">${e.status.replace('_', ' ')}</div>
+            <div class="event-artist">${e.artist}</div>
+            <div class="event-name">${e.name}</div>
+            <div class="event-meta">
+              <span><b>${formatDate(e.eventDate)}</b></span>
+              <span><b>${e.venue?.name || '—'}</b>, ${e.venue?.city || ''}</span>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    `;
+    }
+
+    // ── Seats ─────────────────────────────────────────────────────────────────
+
+    async function selectEvent(event) {
+        currentEvent = event;
+        selectedSeat = null;
+        showScreen('seats');
+
+        document.getElementById('seats-hero').innerHTML = `
+      <div>
+        <div class="event-hero-artist">${event.artist}</div>
+        <div class="event-hero-sub">${event.name}</div>
+      </div>
+      <div style="text-align:right">
+        <div class="event-hero-sub">${formatDate(event.eventDate)}</div>
+        <div class="event-hero-sub">${event.venue?.name}, ${event.venue?.city}</div>
+      </div>
+    `;
+
+        const content = document.getElementById('seats-content');
+        content.innerHTML = '<div class="loading"><div class="spinner"></div>Loading seats...</div>';
+
+        const result = await api('GET', `/api/inventory/events/${event.id}/seats`);
+        if (!result) return;
+
+        const seats = result.data;
+
+        if (!seats.length) {
+            content.innerHTML = '<div class="no-seats">No seats available for this event.</div>';
+            return;
+        }
+
+        // Group by section
+        const sections = {};
+        seats.forEach(s => {
+            if (!sections[s.section]) sections[s.section] = [];
+            sections[s.section].push(s);
+        });
+
+        content.innerHTML = Object.entries(sections).map(([section, sectionSeats]) => `
+      <div class="seats-section">
+        <div class="section-label">${section} · ${sectionSeats.length} available</div>
+        <div class="seats-grid">
+          ${sectionSeats.map(s => `
+            <div class="seat-card" id="seat-${s.id}" onclick='pickSeat(${JSON.stringify(s)})'>
+              <div class="seat-number">${s.seatNumber}</div>
+              <div class="seat-price">${s.price} SEK</div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `).join('');
+    }
+
+    function pickSeat(seat) {
+        // Deselect previous
+        if (selectedSeat) {
+            document.getElementById(`seat-${selectedSeat.id}`)?.classList.remove('selected');
+        }
+        selectedSeat = seat;
+        document.getElementById(`seat-${seat.id}`).classList.add('selected');
+
+        // Show order bar
+        const bar = document.getElementById('order-bar');
+        bar.classList.remove('hidden');
+        document.getElementById('bar-seat').textContent = `${seat.section} · ${seat.seatNumber}`;
+        document.getElementById('bar-price').textContent = `${seat.price} SEK`;
+    }
+
+    // ── Order ─────────────────────────────────────────────────────────────────
+
+    async function placeOrder() {
+        if (!selectedSeat || !currentEvent) return;
+
+        const result = await api('POST', '/api/orders', {
+            ticketEventId: currentEvent.id,
+            seatId:        selectedSeat.id,
+            quantity:      1,
+            totalPrice:    selectedSeat.price,
+        });
+
+        if (!result) return;
+
+        if (!result.ok) {
+            showToast(result.data?.message || 'Could not place order', true);
+            return;
+        }
+
+        showConfirmation(result.data);
+    }
+
+    // ── Confirmation ──────────────────────────────────────────────────────────
+
+    function showConfirmation(order) {
+        showScreen('confirm');
+        document.getElementById('confirm-card').innerHTML = `
+      <div class="confirm-icon">🎟</div>
+      <div class="confirm-title">You're in!</div>
+      <div class="confirm-sub">Your order is confirmed. Check your email for details.</div>
+      <div class="confirm-detail">
+        <span>Order ID</span>
+        <span>#${order.id}</span>
+      </div>
+      <div class="confirm-detail">
+        <span>Event</span>
+        <span>${currentEvent.artist}</span>
+      </div>
+      <div class="confirm-detail">
+        <span>Seat</span>
+        <span>${selectedSeat.section} · ${selectedSeat.seatNumber}</span>
+      </div>
+      <div class="confirm-detail">
+        <span>Total</span>
+        <span>${selectedSeat.price} SEK</span>
+      </div>
+      <div class="confirm-detail">
+        <span>Status</span>
+        <span>${order.status}</span>
+      </div>
+      <br>
+      <button class="btn btn-ghost" style="width:100%" onclick="showEvents()">Browse more events</button>
+    `;
+    }
+
+    // ── Helpers ───────────────────────────────────────────────────────────────
+
+    function formatDate(isoDate) {
+        if (!isoDate) return '—';
+        return new Date(isoDate).toLocaleDateString('en-SE', {
+            weekday: 'short', year: 'numeric', month: 'short', day: 'numeric',
+            hour: '2-digit', minute: '2-digit',
+        });
+    }
+
+    function showToast(msg, isError = false) {
+        const t = document.getElementById('toast');
+        t.textContent = msg;
+        t.className = 'show' + (isError ? ' error' : '');
+        setTimeout(() => { t.className = ''; }, 3000);
+    }
+</script>
+</body>
+</html>

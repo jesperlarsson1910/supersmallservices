@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bff
+  namespace: ticketservice
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bff
+  template:
+    metadata:
+      labels:
+        app: bff
+    spec:
+      containers:
+        - name: bff
+          image: supersmallservices-bff:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 3000
+          env:
+            - name: SERVICES_EVENT-URL
+              value: http://eventservice:8083
+            - name: SERVICES_INVENTORY-URL
+              value: http://inventoryservice:8082
+            - name: SERVICES_ORDER-URL
+              value: http://orderservice:8081
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: ticketservice-secrets
+                  key: jwt-secret
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 3000
+            initialDelaySeconds: 30
+            periodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: bff
+  namespace: ticketservice
+spec:
+  type: LoadBalancer
+  selector:
+    app: bff
+  ports:
+    - port: 3000
+      targetPort: 3000

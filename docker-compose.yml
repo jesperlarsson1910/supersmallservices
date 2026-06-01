@@ -9,6 +9,11 @@ services:
       - "3306:3306"
     volumes:
       - ./init-db:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-proot"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
 
   rabbitmq:
     image: rabbitmq:3-management
@@ -18,71 +23,107 @@ services:
     environment:
       RABBITMQ_DEFAULT_USER: guest
       RABBITMQ_DEFAULT_PASS: guest
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  mailhog:
+    image: mailhog/mailhog
+    ports:
+      - "1025:1025"
+      - "8025:8025"
 
   authservice:
     build: ./authservice
     ports:
-      - "8080:8080"
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/auth_db
-      SPRING_RABBITMQ_HOST: rabbitmq
-
-  bff:
-    build: ./bff
-    ports:
-      - "3000:3000"
+      - "9000:9000"
     depends_on:
-      - authservice
-      - orderservice
-      - eventservice
+      mysql:
+        condition: service_healthy
+
+  eventservice:
+    build: ./eventservice
+    ports:
+      - "8083:8083"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/events_db
+
+  inventoryservice:
+    build: ./inventoryservice
+    ports:
+      - "8082:8082"
+      - "9090:9090"
+    depends_on:
+      mysql:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/inventory_db
+      SPRING_RABBITMQ_HOST: rabbitmq
 
   orderservice:
     build: ./orderservice
     ports:
       - "8081:8081"
     depends_on:
-      - mysql
-      - rabbitmq
+      mysql:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      inventoryservice:
+        condition: service_started
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/orders_db
       SPRING_RABBITMQ_HOST: rabbitmq
+      GRPC_INVENTORY_HOST: inventoryservice
+      GRPC_INVENTORY_PORT: 9090
 
-  inventoryservice:
-    build: ./inventoryservice
-    ports:
-      - "8082:8082"
-    depends_on:
-      - mysql
-      - rabbitmq
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/inventory_db
-      SPRING_RABBITMQ_HOST: rabbitmq
-
-  # --- stub, build in Phase 2 ---
-  eventservice:
-    build: ./eventservice
-    ports:
-      - "8083:8083"
-    depends_on:
-      - mysql
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/events_db
-
-  # --- stub, build in Phase 3 ---
   notificationservice:
     build: ./notificationservice
     ports:
       - "8084:8084"
     depends_on:
-      - rabbitmq
+      rabbitmq:
+        condition: service_healthy
+      mailhog:
+        condition: service_started
     environment:
       SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_MAIL_HOST: mailhog
+      SPRING_MAIL_PORT: 1025
 
   botservice:
     build: ./botservice
     ports:
       - "8085:8085"
     depends_on:
-      - rabbitmq
+      rabbitmq:
+        condition: service_healthy
+      orderservice:
+        condition: service_started
     environment:
       SPRING_RABBITMQ_HOST: rabbitmq
+      ORDERSERVICE_URL: http://orderservice:8081
+
+  bff:
+    build: ./bff
+    ports:
+      - "3000:3000"
+    depends_on:
+      orderservice:
+        condition: service_started
+      inventoryservice:
+        condition: service_started
+      eventservice:
+        condition: service_started
+    environment:
+      SERVICES_EVENT-URL:     http://eventservice:8083
+      SERVICES_INVENTORY-URL: http://inventoryservice:8082
+      SERVICES_ORDER-URL:     http://orderservice:8081
+      JWT_SECRET:             ticketservice-dev-secret-must-be-at-least-32-chars-long

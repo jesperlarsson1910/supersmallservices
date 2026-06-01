@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: eventservice
+  namespace: ticketservice
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: eventservice
+  template:
+    metadata:
+      labels:
+        app: eventservice
+    spec:
+      containers:
+        - name: eventservice
+          image: supersmallservices-eventservice:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8083
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:mysql://mysql:3306/events_db?createDatabaseIfNotExist=true
+            - name: SPRING_DATASOURCE_USERNAME
+              value: root
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: ticketservice-secrets
+                  key: mysql-root-password
+          readinessProbe:
+            tcpSocket:
+              port: 8083
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            failureThreshold: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: eventservice
+  namespace: ticketservice
+spec:
+  selector:
+    app: eventservice
+  ports:
+    - port: 8083
+      targetPort: 8083

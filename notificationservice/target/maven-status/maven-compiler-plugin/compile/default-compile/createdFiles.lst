@@ -1,0 +1,4 @@
+org\example\notificationservice\config\RabbitConfig.class
+org\example\notificationservice\model\TicketPurchasedEvent.class
+org\example\notificationservice\service\EmailNotificationService.class
+org\example\notificationservice\service\NotificationListener.class

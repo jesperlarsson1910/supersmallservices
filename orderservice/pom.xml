@@ -15,7 +15,7 @@
     <description>Order Service with Outbox Pattern</description>
 
     <properties>
-        <java.version>26</java.version>
+        <java.version>25</java.version>
         <grpc.version>1.75.0</grpc.version>
         <protobuf.version>4.28.2</protobuf.version>
     </properties>
@@ -58,6 +58,11 @@
         <dependency>
             <groupId>io.micrometer</groupId>
             <artifactId>micrometer-tracing-bridge-otel</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>test</scope>
         </dependency>
 
         <!-- gRPC client -->

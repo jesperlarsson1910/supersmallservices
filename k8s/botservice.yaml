@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: botservice
+  namespace: ticketservice
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: botservice
+  template:
+    metadata:
+      labels:
+        app: botservice
+    spec:
+      containers:
+        - name: botservice
+          image: supersmallservices-botservice:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8085
+          env:
+            - name: SPRING_RABBITMQ_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: ticketservice-config
+                  key: SPRING_RABBITMQ_HOST
+            - name: ORDERSERVICE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: ticketservice-config
+                  key: ORDERSERVICE_URL
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8085
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            failureThreshold: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: botservice
+  namespace: ticketservice
+spec:
+  selector:
+    app: botservice
+  ports:
+    - port: 8085
+      targetPort: 8085
