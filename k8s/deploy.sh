@@ -40,6 +40,7 @@ kubectl apply -f orderservice.yaml
 kubectl apply -f notificationservice.yaml
 kubectl apply -f botservice.yaml
 kubectl apply -f bff.yaml
+kubectl apply -f userservice.yaml
 
 echo ""
 echo "==> All resources applied. Checking status..."

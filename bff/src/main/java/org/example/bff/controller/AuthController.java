@@ -1,8 +1,13 @@
 package org.example.bff.controller;
 
 import org.example.bff.service.JwtService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestClient;
 
 import java.util.Map;
 
@@ -10,24 +15,15 @@ import java.util.Map;
 @RequestMapping("/api")
 public class AuthController {
 
+    private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
+
     private final JwtService jwtService;
+    private final RestClient userClient;
 
-    // Demo users — replace with DB lookup in production
-    private static final Map<String, long[]> USERS = Map.of(
-            "demo",  new long[]{1},
-            "admin", new long[]{2}
-    );
-    private static final Map<String, String> PASSWORDS = Map.of(
-            "demo",  "demo",
-            "admin", "admin"
-    );
-    private static final Map<String, String> ROLES = Map.of(
-            "demo",  "USER",
-            "admin", "ADMIN"
-    );
-
-    public AuthController(JwtService jwtService) {
+    public AuthController(JwtService jwtService,
+                          @Value("${services.user-url}") String userUrl) {
         this.jwtService = jwtService;
+        this.userClient = RestClient.create(userUrl);
     }
 
     @PostMapping("/login")
@@ -35,18 +31,43 @@ public class AuthController {
         String username = body.get("username");
         String password = body.get("password");
 
-        if (username == null || !PASSWORDS.getOrDefault(username, "").equals(password)) {
-            return ResponseEntity.status(401).body(Map.of("error", "Invalid credentials"));
+        if (username == null || password == null) {
+            return ResponseEntity.badRequest().body(Map.of("error", "Username and password required"));
         }
 
-        long userId = USERS.get(username)[0];
-        String role = ROLES.get(username);
-        String token = jwtService.generateToken(userId, username, role);
+        try {
+            // Delegate credential verification to userservice
+            @SuppressWarnings("unchecked")
+            Map<String, Object> user = userClient.post()
+                    .uri("/users/authenticate")
+                    .contentType(org.springframework.http.MediaType.APPLICATION_JSON)
+                    .body(Map.of("username", username, "password", password))
+                    .retrieve()
+                    .body(Map.class);
 
-        return ResponseEntity.ok(Map.of(
-                "token",    token,
-                "username", username,
-                "role",     role
-        ));
+            if (user == null) {
+                return ResponseEntity.status(401).body(Map.of("error", "Invalid credentials"));
+            }
+
+            Long userId   = Long.valueOf(user.get("id").toString());
+            String role   = user.getOrDefault("role", "USER").toString();
+
+            String token = jwtService.generateToken(userId, username, role);
+
+            logger.info("Login successful for user: {} (role: {})", username, role);
+
+            return ResponseEntity.ok(Map.of(
+                    "token",    token,
+                    "username", username,
+                    "role",     role
+            ));
+
+        } catch (HttpClientErrorException.Unauthorized e) {
+            logger.warn("Failed login attempt for user: {}", username);
+            return ResponseEntity.status(401).body(Map.of("error", "Invalid credentials"));
+        } catch (Exception e) {
+            logger.error("Auth error for user {}: {}", username, e.getMessage());
+            return ResponseEntity.status(503).body(Map.of("error", "Auth service unavailable"));
+        }
     }
 }
