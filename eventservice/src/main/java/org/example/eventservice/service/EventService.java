@@ -45,6 +45,12 @@ public class EventService {
 
     @Transactional
     public TicketEvent createEvent(TicketEvent event) {
+        // Resolve venue by ID to avoid Hibernate trying to persist a detached entity
+        if (event.getVenue() != null && event.getVenue().getId() != null) {
+            Venue venue = venueRepository.findById(event.getVenue().getId())
+                    .orElseThrow(() -> new RuntimeException("Venue not found"));
+            event.setVenue(venue);
+        }
         return eventRepository.save(event);
     }
 

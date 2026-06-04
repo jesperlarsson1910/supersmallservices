@@ -80,6 +80,8 @@ services:
         condition: service_started
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/orders_db
+      GRPC_USERSERVICE_HOST: userservice
+      GRPC_USERSERVICE_PORT: 9091
       SPRING_RABBITMQ_HOST: rabbitmq
       GRPC_INVENTORY_HOST: inventoryservice
       GRPC_INVENTORY_PORT: 9090
@@ -94,6 +96,8 @@ services:
       mailhog:
         condition: service_started
     environment:
+      GRPC_USERSERVICE_HOST: userservice
+      GRPC_USERSERVICE_PORT: 9091
       SPRING_RABBITMQ_HOST: rabbitmq
       SPRING_MAIL_HOST: mailhog
       SPRING_MAIL_PORT: 1025
@@ -126,4 +130,19 @@ services:
       SERVICES_EVENT-URL:     http://eventservice:8083
       SERVICES_INVENTORY-URL: http://inventoryservice:8082
       SERVICES_ORDER-URL:     http://orderservice:8081
+      SERVICES_USER-URL:      http://userservice:8086
       JWT_SECRET:             ticketservice-dev-secret-must-be-at-least-32-chars-long
+
+  userservice:
+    build: ./userservice
+    ports:
+      - "8086:8086"
+      - "9091:9091"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/users_db?createDatabaseIfNotExist=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+      GRPC_SERVER_PORT: 9091

@@ -5,21 +5,20 @@ option java_outer_classname = "InventoryProto";
 option java_multiple_files = true;
 
 service InventoryGrpcService {
-  // Called by orderservice before placing an order
-  // Returns whether the seat is available and its details
   rpc CheckSeatAvailability(SeatRequest) returns (SeatResponse);
 }
 
 message SeatRequest {
-  int64 seat_id = 1;
+  int64 seat_id        = 1;
   int64 ticket_event_id = 2;
-  int32 quantity = 3;
+  int32 quantity       = 3;
+  int64 user_id        = 4; // allows held seats to be purchased by the holding user
 }
 
 message SeatResponse {
-  bool available = 1;
+  bool available   = 1;
   string seat_number = 2;
-  string section = 3;
-  double price = 4;
-  string reason = 5; // populated when available = false
+  string section   = 3;
+  double price     = 4;
+  string reason    = 5;
 }

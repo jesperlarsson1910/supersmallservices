@@ -23,8 +23,8 @@ public class InventoryGrpcServer extends InventoryGrpcServiceGrpc.InventoryGrpcS
     @Override
     public void checkSeatAvailability(SeatRequest request,
                                       StreamObserver<SeatResponse> responseObserver) {
-        logger.info("gRPC: CheckSeatAvailability seatId={} eventId={} qty={}",
-            request.getSeatId(), request.getTicketEventId(), request.getQuantity());
+        logger.info("gRPC: CheckSeatAvailability seatId={} eventId={} userId={}",
+                request.getSeatId(), request.getTicketEventId(), request.getUserId());
 
         Seat seat = seatRepository.findById(request.getSeatId()).orElse(null);
 
@@ -32,31 +32,46 @@ public class InventoryGrpcServer extends InventoryGrpcServiceGrpc.InventoryGrpcS
 
         if (seat == null) {
             response = SeatResponse.newBuilder()
-                .setAvailable(false)
-                .setReason("SEAT_NOT_FOUND")
-                .build();
+                    .setAvailable(false).setReason("SEAT_NOT_FOUND").build();
 
         } else if (!seat.getTicketEventId().equals(request.getTicketEventId())) {
             response = SeatResponse.newBuilder()
-                .setAvailable(false)
-                .setReason("SEAT_DOES_NOT_BELONG_TO_EVENT")
-                .build();
+                    .setAvailable(false).setReason("SEAT_DOES_NOT_BELONG_TO_EVENT").build();
 
-        } else if (seat.getStatus() != Seat.SeatStatus.AVAILABLE) {
+        } else if (seat.getStatus() == Seat.SeatStatus.SOLD) {
             response = SeatResponse.newBuilder()
-                .setAvailable(false)
-                .setSeatNumber(seat.getSeatNumber())
-                .setSection(seat.getSection())
-                .setReason("SEAT_" + seat.getStatus().name())
-                .build();
+                    .setAvailable(false)
+                    .setSeatNumber(seat.getSeatNumber())
+                    .setSection(seat.getSection())
+                    .setReason("SEAT_SOLD").build();
+
+        } else if (seat.getStatus() == Seat.SeatStatus.HELD) {
+            // Allow if this user holds the seat (click-to-hold)
+            boolean heldByThisUser = request.getUserId() > 0 &&
+                    Long.valueOf(request.getUserId()).equals(seat.getHeldByUserId());
+
+            if (heldByThisUser) {
+                response = SeatResponse.newBuilder()
+                        .setAvailable(true)
+                        .setSeatNumber(seat.getSeatNumber())
+                        .setSection(seat.getSection())
+                        .setPrice(seat.getPrice().doubleValue())
+                        .build();
+            } else {
+                response = SeatResponse.newBuilder()
+                        .setAvailable(false)
+                        .setSeatNumber(seat.getSeatNumber())
+                        .setSection(seat.getSection())
+                        .setReason("SEAT_HELD").build();
+            }
 
         } else {
             response = SeatResponse.newBuilder()
-                .setAvailable(true)
-                .setSeatNumber(seat.getSeatNumber())
-                .setSection(seat.getSection())
-                .setPrice(seat.getPrice().doubleValue())
-                .build();
+                    .setAvailable(true)
+                    .setSeatNumber(seat.getSeatNumber())
+                    .setSection(seat.getSection())
+                    .setPrice(seat.getPrice().doubleValue())
+                    .build();
         }
 
         responseObserver.onNext(response);

@@ -21,6 +21,13 @@ public class InventoryController {
         return inventoryService.getAvailableSeats(eventId);
     }
 
+    // Called by UI when user clicks a seat — 5-minute hold
+    @PostMapping("/seats/{seatId}/hold")
+    public Seat holdSeat(@PathVariable Long seatId,
+                         @RequestHeader("X-User-Id") Long userId) {
+        return inventoryService.holdSeatForUser(seatId, userId);
+    }
+
     @PostMapping("/seats/{seatId}/confirm")
     public void confirmSeat(@PathVariable Long seatId) {
         inventoryService.confirmSeat(seatId);

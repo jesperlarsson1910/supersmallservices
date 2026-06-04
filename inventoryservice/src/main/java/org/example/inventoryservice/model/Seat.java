@@ -12,45 +12,46 @@ public class Seat {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long ticketEventId; // references event-service
-    private String seatNumber;  // e.g. "A12"
-    private String section;     // e.g. "Floor", "Balcony"
+    private Long ticketEventId;
+    private String seatNumber;
+    private String section;
     private BigDecimal price;
 
     @Enumerated(EnumType.STRING)
     private SeatStatus status = SeatStatus.AVAILABLE;
 
-    private Long heldByOrderId;         // which order holds this seat
-    private LocalDateTime holdExpiresAt; // TTL for the hold (default: 15 min)
+    private Long heldByOrderId;
+    private Long heldByUserId;          // set on click-to-hold
+    private LocalDateTime holdExpiresAt;
 
     public enum SeatStatus {
-        AVAILABLE,
-        HELD,
-        SOLD
+        AVAILABLE, HELD, SOLD
     }
 
     public Seat() {}
 
     public Seat(Long ticketEventId, String seatNumber, String section, BigDecimal price) {
         this.ticketEventId = ticketEventId;
-        this.seatNumber = seatNumber;
-        this.section = section;
-        this.price = price;
+        this.seatNumber    = seatNumber;
+        this.section       = section;
+        this.price         = price;
     }
 
-    public Long getId() { return id; }
-    public Long getTicketEventId() { return ticketEventId; }
-    public void setTicketEventId(Long ticketEventId) { this.ticketEventId = ticketEventId; }
-    public String getSeatNumber() { return seatNumber; }
-    public void setSeatNumber(String seatNumber) { this.seatNumber = seatNumber; }
-    public String getSection() { return section; }
-    public void setSection(String section) { this.section = section; }
-    public BigDecimal getPrice() { return price; }
-    public void setPrice(BigDecimal price) { this.price = price; }
-    public SeatStatus getStatus() { return status; }
-    public void setStatus(SeatStatus status) { this.status = status; }
-    public Long getHeldByOrderId() { return heldByOrderId; }
-    public void setHeldByOrderId(Long heldByOrderId) { this.heldByOrderId = heldByOrderId; }
-    public LocalDateTime getHoldExpiresAt() { return holdExpiresAt; }
-    public void setHoldExpiresAt(LocalDateTime holdExpiresAt) { this.holdExpiresAt = holdExpiresAt; }
+    public Long getId()                          { return id; }
+    public Long getTicketEventId()               { return ticketEventId; }
+    public void setTicketEventId(Long v)         { this.ticketEventId = v; }
+    public String getSeatNumber()                { return seatNumber; }
+    public void setSeatNumber(String v)          { this.seatNumber = v; }
+    public String getSection()                   { return section; }
+    public void setSection(String v)             { this.section = v; }
+    public BigDecimal getPrice()                 { return price; }
+    public void setPrice(BigDecimal v)           { this.price = v; }
+    public SeatStatus getStatus()                { return status; }
+    public void setStatus(SeatStatus v)          { this.status = v; }
+    public Long getHeldByOrderId()               { return heldByOrderId; }
+    public void setHeldByOrderId(Long v)         { this.heldByOrderId = v; }
+    public Long getHeldByUserId()                { return heldByUserId; }
+    public void setHeldByUserId(Long v)          { this.heldByUserId = v; }
+    public LocalDateTime getHoldExpiresAt()      { return holdExpiresAt; }
+    public void setHoldExpiresAt(LocalDateTime v){ this.holdExpiresAt = v; }
 }

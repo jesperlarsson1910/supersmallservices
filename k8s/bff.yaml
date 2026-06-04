@@ -26,6 +26,8 @@ spec:
               value: http://inventoryservice:8082
             - name: SERVICES_ORDER-URL
               value: http://orderservice:8081
+            - name: SERVICES_USER-URL
+              value: http://userservice:8086
             - name: JWT_SECRET
               valueFrom:
                 secretKeyRef:

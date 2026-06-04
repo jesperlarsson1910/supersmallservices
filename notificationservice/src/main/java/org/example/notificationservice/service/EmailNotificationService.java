@@ -18,20 +18,20 @@ public class EmailNotificationService {
         this.mailSender = mailSender;
     }
 
-    public void sendPurchaseConfirmation(TicketPurchasedEvent event, String toEmail) {
+    public void sendPurchaseConfirmation(TicketPurchasedEvent event, String toEmail, String name) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom("noreply@ticketservice.com");
         message.setTo(toEmail);
         message.setSubject("Your ticket order #" + event.orderId() + " is confirmed!");
-        message.setText(buildEmailBody(event));
+        message.setText(buildEmailBody(event, name));
 
         mailSender.send(message);
         logger.info("Confirmation email sent for order {} to {}", event.orderId(), toEmail);
     }
 
-    private String buildEmailBody(TicketPurchasedEvent event) {
+    private String buildEmailBody(TicketPurchasedEvent event, String name) {
         return """
-            Hi there,
+            Hi %s,
 
             Your ticket purchase is confirmed!
 
@@ -42,9 +42,10 @@ public class EmailNotificationService {
             Thank you for your purchase.
             The Ticket Service Team
             """.formatted(
+                name,
                 event.orderId(),
                 event.quantity(),
                 event.totalPrice()
-            );
+        );
     }
 }

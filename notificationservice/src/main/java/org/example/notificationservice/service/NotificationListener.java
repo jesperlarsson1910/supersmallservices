@@ -1,5 +1,7 @@
 package org.example.notificationservice.service;
 
+import org.example.grpc.UserResponse;
+import org.example.grpc.client.UserGrpcClient;
 import org.example.notificationservice.config.RabbitConfig;
 import org.example.notificationservice.model.TicketPurchasedEvent;
 import org.slf4j.Logger;
@@ -13,24 +15,33 @@ public class NotificationListener {
     private static final Logger logger = LoggerFactory.getLogger(NotificationListener.class);
 
     private final EmailNotificationService emailService;
+    private final UserGrpcClient userGrpcClient;
 
-    public NotificationListener(EmailNotificationService emailService) {
-        this.emailService = emailService;
+    public NotificationListener(EmailNotificationService emailService,
+                                UserGrpcClient userGrpcClient) {
+        this.emailService    = emailService;
+        this.userGrpcClient  = userGrpcClient;
     }
 
     @RabbitListener(queues = RabbitConfig.QUEUE_NAME)
     public void handleTicketPurchased(TicketPurchasedEvent event) {
         logger.info("Received TicketPurchasedEvent for order {}, user {}",
-            event.orderId(), event.userId());
+                event.orderId(), event.userId());
 
-        // In a real system userId would be used to look up the user's email
-        // from authservice/userservice. For now we derive a placeholder.
-        String toEmail = "user-" + event.userId() + "@example.com";
+        // Fetch real email from userservice via gRPC
+        UserResponse user = userGrpcClient.getUserById(event.userId());
+
+        String toEmail = user.getFound()
+                ? user.getEmail()
+                : "user-" + event.userId() + "@example.com";
+
+        String name = event.userName() != null ? event.userName() : "Customer";
+
+        logger.info("Sending confirmation email for order {} to {}", event.orderId(), toEmail);
 
         try {
-            emailService.sendPurchaseConfirmation(event, toEmail);
+            emailService.sendPurchaseConfirmation(event, toEmail, name);
         } catch (Exception e) {
-            // Log but don't rethrow — a failed email should not requeue the message
             logger.error("Failed to send email for order {}: {}", event.orderId(), e.getMessage());
         }
     }

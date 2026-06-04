@@ -1,0 +1,12 @@
+C:\Users\Jesper\IdeaProjects\supersmallservices\notificationservice\src\main\java\org\example\grpc\client\UserGrpcClient.java
+C:\Users\Jesper\IdeaProjects\supersmallservices\notificationservice\src\main\java\org\example\notificationservice\config\RabbitConfig.java
+C:\Users\Jesper\IdeaProjects\supersmallservices\notificationservice\src\main\java\org\example\notificationservice\model\TicketPurchasedEvent.java
+C:\Users\Jesper\IdeaProjects\supersmallservices\notificationservice\src\main\java\org\example\notificationservice\NotificationServiceApplication.java
+C:\Users\Jesper\IdeaProjects\supersmallservices\notificationservice\src\main\java\org\example\notificationservice\service\EmailNotificationService.java
+C:\Users\Jesper\IdeaProjects\supersmallservices\notificationservice\src\main\java\org\example\notificationservice\service\NotificationListener.java
+C:\Users\Jesper\IdeaProjects\supersmallservices\notificationservice\target\generated-sources\protobuf\grpc-java\org\example\grpc\UserGrpcServiceGrpc.java
+C:\Users\Jesper\IdeaProjects\supersmallservices\notificationservice\target\generated-sources\protobuf\java\org\example\grpc\UserProto.java
+C:\Users\Jesper\IdeaProjects\supersmallservices\notificationservice\target\generated-sources\protobuf\java\org\example\grpc\UserRequest.java
+C:\Users\Jesper\IdeaProjects\supersmallservices\notificationservice\target\generated-sources\protobuf\java\org\example\grpc\UserRequestOrBuilder.java
+C:\Users\Jesper\IdeaProjects\supersmallservices\notificationservice\target\generated-sources\protobuf\java\org\example\grpc\UserResponse.java
+C:\Users\Jesper\IdeaProjects\supersmallservices\notificationservice\target\generated-sources\protobuf\java\org\example\grpc\UserResponseOrBuilder.java

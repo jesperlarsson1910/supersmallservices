@@ -4,311 +4,159 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TIXR — Ticket Service</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg:       #0a0a0a;
-            --surface:  #111111;
-            --border:   #222222;
-            --accent:   #e8ff47;
-            --accent2:  #ff4747;
-            --text:     #f0f0f0;
-            --muted:    #666;
-            --radius:   6px;
+            --bg: #0a0a0a; --surface: #111; --border: #222;
+            --accent: #e8ff47; --accent2: #ff4747; --text: #f0f0f0;
+            --muted: #666; --radius: 6px; --admin: #a78bfa;
         }
-
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+        body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; font-weight: 300; min-height: 100vh; }
 
-        body {
-            background: var(--bg);
-            color: var(--text);
-            font-family: 'DM Sans', sans-serif;
-            font-weight: 300;
-            min-height: 100vh;
-        }
-
-        /* ── NAV ── */
-        nav {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 20px 40px;
-            border-bottom: 1px solid var(--border);
-            position: sticky; top: 0;
-            background: rgba(10,10,10,0.95);
-            backdrop-filter: blur(10px);
-            z-index: 100;
-        }
-        .logo {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 28px;
-            letter-spacing: 4px;
-            color: var(--accent);
-        }
-        .nav-right { display: flex; align-items: center; gap: 16px; }
+        /* NAV */
+        nav { display: flex; align-items: center; justify-content: space-between; padding: 20px 40px; border-bottom: 1px solid var(--border); position: sticky; top: 0; background: rgba(10,10,10,.95); backdrop-filter: blur(10px); z-index: 100; }
+        .logo { font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 4px; color: var(--accent); cursor: pointer; }
+        .nav-right { display: flex; align-items: center; gap: 12px; }
+        .nav-link { font-size: 13px; color: var(--muted); background: none; border: 1px solid var(--border); border-radius: var(--radius); padding: 6px 14px; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all .2s; }
+        .nav-link:hover { color: var(--accent); border-color: var(--accent); }
+        .nav-link.admin { color: var(--admin); border-color: var(--admin); }
+        .nav-link.admin:hover { background: rgba(167,139,250,.1); }
         #nav-user { font-size: 13px; color: var(--muted); font-family: 'DM Mono', monospace; }
-        #nav-logout {
-            font-size: 12px; color: var(--muted); background: none;
-            border: 1px solid var(--border); border-radius: var(--radius);
-            padding: 6px 14px; cursor: pointer; font-family: 'DM Sans', sans-serif;
-            transition: all .2s;
-        }
-        #nav-logout:hover { color: var(--accent2); border-color: var(--accent2); }
 
-        /* ── SCREENS ── */
+        /* SCREENS */
         .screen { display: none; padding: 60px 40px; max-width: 1000px; margin: 0 auto; }
         .screen.active { display: block; animation: fadeUp .3s ease; }
+        @keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
 
-        @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(16px); }
-            to   { opacity: 1; transform: translateY(0); }
-        }
-
-        /* ── LOGIN ── */
-        #screen-login {
-            max-width: 420px;
-            margin: 0 auto;
-            padding-top: 120px;
-        }
-        .login-title {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 64px;
-            letter-spacing: 6px;
-            line-height: 1;
-            color: var(--accent);
-            margin-bottom: 8px;
-        }
-        .login-sub {
-            color: var(--muted);
-            font-size: 13px;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            margin-bottom: 48px;
-        }
+        /* LOGIN */
+        #screen-login { max-width: 420px; margin: 0 auto; padding-top: 120px; }
+        .login-title { font-family: 'Bebas Neue', sans-serif; font-size: 64px; letter-spacing: 6px; color: var(--accent); margin-bottom: 8px; }
+        .login-sub { color: var(--muted); font-size: 13px; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 48px; }
         .form-group { margin-bottom: 20px; }
         label { display: block; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
-        input[type=text], input[type=password] {
-            width: 100%; padding: 14px 16px;
-            background: var(--surface); border: 1px solid var(--border);
-            border-radius: var(--radius); color: var(--text);
-            font-family: 'DM Mono', monospace; font-size: 14px;
-            outline: none; transition: border-color .2s;
+        input[type=text], input[type=password], input[type=datetime-local], input[type=number], select, textarea {
+            width: 100%; padding: 14px 16px; background: var(--surface); border: 1px solid var(--border);
+            border-radius: var(--radius); color: var(--text); font-family: 'DM Mono', monospace;
+            font-size: 14px; outline: none; transition: border-color .2s;
         }
-        input:focus { border-color: var(--accent); }
+        select option { background: var(--surface); }
+        input:focus, select:focus, textarea:focus { border-color: var(--accent); }
         .login-hint { font-size: 11px; color: var(--muted); margin-top: 6px; font-family: 'DM Mono', monospace; }
         .error-msg { color: var(--accent2); font-size: 13px; margin-top: 12px; min-height: 20px; }
 
-        /* ── BUTTONS ── */
-        .btn {
-            padding: 14px 28px; border: none; border-radius: var(--radius);
-            font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500;
-            cursor: pointer; transition: all .2s; letter-spacing: .5px;
-        }
-        .btn-primary {
-            background: var(--accent); color: #0a0a0a;
-            width: 100%; margin-top: 8px;
-        }
+        /* BUTTONS */
+        .btn { padding: 14px 28px; border: none; border-radius: var(--radius); font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; transition: all .2s; letter-spacing: .5px; }
+        .btn-primary { background: var(--accent); color: #0a0a0a; width: 100%; margin-top: 8px; }
         .btn-primary:hover { background: #f5ff70; transform: translateY(-1px); }
-        .btn-primary:active { transform: translateY(0); }
-        .btn-ghost {
-            background: none; color: var(--text);
-            border: 1px solid var(--border);
-        }
+        .btn-ghost { background: none; color: var(--text); border: 1px solid var(--border); }
         .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
-        .btn-danger {
-            background: none; color: var(--accent2);
-            border: 1px solid var(--accent2); font-size: 12px; padding: 8px 16px;
-        }
+        .btn-danger { background: none; color: var(--accent2); border: 1px solid var(--accent2); font-size: 12px; padding: 8px 16px; }
+        .btn-danger:hover { background: rgba(255,71,71,.1); }
+        .btn-admin { background: none; color: var(--admin); border: 1px solid var(--admin); font-size: 12px; padding: 8px 16px; }
+        .btn-sm { padding: 8px 16px; font-size: 12px; width: auto; margin-top: 0; }
 
-        /* ── EVENTS ── */
-        .page-header {
-            margin-bottom: 40px;
-            display: flex; align-items: baseline; justify-content: space-between;
-        }
-        .page-title {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 48px; letter-spacing: 4px; color: var(--text);
-        }
+        /* PAGE HEADER */
+        .page-header { margin-bottom: 40px; display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+        .page-title { font-family: 'Bebas Neue', sans-serif; font-size: 48px; letter-spacing: 4px; }
         .page-count { font-size: 13px; color: var(--muted); font-family: 'DM Mono', monospace; }
 
-        .events-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 16px;
-        }
-
-        .event-card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 28px;
-            cursor: pointer;
-            transition: all .2s;
-            position: relative;
-            overflow: hidden;
-        }
-        .event-card::before {
-            content: '';
-            position: absolute; top: 0; left: 0; right: 0; height: 2px;
-            background: var(--accent);
-            transform: scaleX(0); transform-origin: left;
-            transition: transform .2s;
-        }
+        /* EVENTS GRID */
+        .events-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+        .event-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 28px; cursor: pointer; transition: all .2s; position: relative; overflow: hidden; }
+        .event-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: var(--accent); transform: scaleX(0); transform-origin: left; transition: transform .2s; }
         .event-card:hover { border-color: #333; transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0,0,0,.4); }
         .event-card:hover::before { transform: scaleX(1); }
-
-        .event-status {
-            display: inline-block;
-            font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
-            font-family: 'DM Mono', monospace;
-            padding: 4px 10px; border-radius: 100px;
-            margin-bottom: 16px;
-        }
+        .event-card-actions { display: flex; gap: 8px; margin-top: 16px; }
+        .event-status { display: inline-block; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; font-family: 'DM Mono', monospace; padding: 4px 10px; border-radius: 100px; margin-bottom: 16px; }
         .status-ON_SALE    { background: rgba(232,255,71,.12); color: var(--accent); border: 1px solid rgba(232,255,71,.3); }
         .status-UPCOMING   { background: rgba(255,255,255,.06); color: var(--muted); border: 1px solid var(--border); }
         .status-SOLD_OUT   { background: rgba(255,71,71,.12); color: var(--accent2); border: 1px solid rgba(255,71,71,.3); }
         .status-CANCELLED  { background: rgba(255,71,71,.06); color: #666; border: 1px solid var(--border); }
-
         .event-artist { font-family: 'Bebas Neue', sans-serif; font-size: 26px; letter-spacing: 2px; margin-bottom: 4px; }
         .event-name   { font-size: 13px; color: var(--muted); margin-bottom: 20px; }
         .event-meta   { display: flex; flex-direction: column; gap: 6px; }
         .event-meta span { font-size: 12px; color: var(--muted); font-family: 'DM Mono', monospace; }
         .event-meta span b { color: var(--text); font-weight: 400; }
 
-        /* ── SEATS ── */
-        .back-btn {
-            display: flex; align-items: center; gap: 8px;
-            background: none; border: none; color: var(--muted);
-            font-family: 'DM Sans', sans-serif; font-size: 13px;
-            cursor: pointer; margin-bottom: 32px; padding: 0;
-            transition: color .2s;
-        }
+        /* SEATS */
+        .back-btn { display: flex; align-items: center; gap: 8px; background: none; border: none; color: var(--muted); font-family: 'DM Sans', sans-serif; font-size: 13px; cursor: pointer; margin-bottom: 32px; padding: 0; transition: color .2s; }
         .back-btn:hover { color: var(--text); }
-
-        .event-hero {
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 32px;
-            margin-bottom: 40px;
-            background: var(--surface);
-            display: flex; justify-content: space-between; align-items: center;
-            flex-wrap: wrap; gap: 16px;
-        }
+        .event-hero { border: 1px solid var(--border); border-radius: var(--radius); padding: 32px; margin-bottom: 40px; background: var(--surface); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
         .event-hero-artist { font-family: 'Bebas Neue', sans-serif; font-size: 42px; letter-spacing: 3px; }
         .event-hero-sub { color: var(--muted); font-size: 13px; margin-top: 4px; font-family: 'DM Mono', monospace; }
-
         .seats-section { margin-bottom: 40px; }
-        .section-label {
-            font-size: 11px; letter-spacing: 3px; text-transform: uppercase;
-            color: var(--muted); margin-bottom: 16px;
-            padding-bottom: 12px; border-bottom: 1px solid var(--border);
-        }
-        .seats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-            gap: 10px;
-        }
-        .seat-card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 16px 12px;
-            cursor: pointer;
-            transition: all .15s;
-            text-align: center;
-        }
+        .section-label { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--muted); margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+        .seats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; }
+        .seat-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 12px; cursor: pointer; transition: all .15s; text-align: center; }
         .seat-card:hover { border-color: var(--accent); background: rgba(232,255,71,.05); }
         .seat-card.selected { border-color: var(--accent); background: rgba(232,255,71,.1); }
+        .seat-card.held-by-me { border-color: var(--accent); background: rgba(232,255,71,.08); position: relative; }
+        .seat-card.held-by-me::after { content: '🔒'; position: absolute; top: 4px; right: 6px; font-size: 10px; }
         .seat-number { font-family: 'Bebas Neue', sans-serif; font-size: 22px; letter-spacing: 1px; }
         .seat-price  { font-size: 12px; color: var(--muted); font-family: 'DM Mono', monospace; margin-top: 4px; }
-
+        .hold-timer  { font-size: 10px; color: var(--accent); font-family: 'DM Mono', monospace; margin-top: 2px; }
         .no-seats { color: var(--muted); font-size: 14px; padding: 40px 0; text-align: center; }
 
-        /* ── ORDER SUMMARY ── */
-        .order-summary {
-            position: sticky; bottom: 0;
-            background: rgba(10,10,10,.97);
-            border-top: 1px solid var(--border);
-            padding: 20px 40px;
-            display: flex; align-items: center; justify-content: space-between;
-            gap: 20px;
-            backdrop-filter: blur(10px);
-        }
+        /* ORDER BAR */
+        .order-summary { position: sticky; bottom: 0; background: rgba(10,10,10,.97); border-top: 1px solid var(--border); padding: 20px 40px; display: flex; align-items: center; justify-content: space-between; gap: 20px; backdrop-filter: blur(10px); }
         .order-summary.hidden { display: none; }
         .summary-label { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
         .summary-value { font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 2px; color: var(--accent); }
-        .summary-seat  { font-family: 'DM Mono', monospace; font-size: 13px; color: var(--text); }
+        .summary-seat  { font-family: 'DM Mono', monospace; font-size: 13px; }
 
-        /* ── CONFIRMATION ── */
-        .confirmation-card {
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 60px 48px;
-            text-align: center;
-            background: var(--surface);
-            max-width: 480px;
-            margin: 0 auto;
-        }
-        .confirm-icon {
-            font-size: 48px; margin-bottom: 24px;
-        }
-        .confirm-title {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: 48px; letter-spacing: 4px; color: var(--accent);
-            margin-bottom: 8px;
-        }
-        .confirm-sub { color: var(--muted); font-size: 14px; margin-bottom: 40px; }
-        .confirm-detail {
-            display: flex; justify-content: space-between;
-            padding: 14px 0; border-bottom: 1px solid var(--border);
-            font-size: 14px;
-        }
+        /* CONFIRMATION */
+        .confirmation-card { border: 1px solid var(--border); border-radius: var(--radius); padding: 60px 48px; text-align: center; background: var(--surface); max-width: 480px; margin: 0 auto; }
+        .confirm-icon  { font-size: 48px; margin-bottom: 24px; }
+        .confirm-title { font-family: 'Bebas Neue', sans-serif; font-size: 48px; letter-spacing: 4px; color: var(--accent); margin-bottom: 8px; }
+        .confirm-sub   { color: var(--muted); font-size: 14px; margin-bottom: 40px; }
+        .confirm-detail { display: flex; justify-content: space-between; padding: 14px 0; border-bottom: 1px solid var(--border); font-size: 14px; }
         .confirm-detail:last-of-type { border-bottom: none; }
         .confirm-detail span:first-child { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: 1px; }
         .confirm-detail span:last-child  { font-family: 'DM Mono', monospace; }
 
-        /* ── LOADING ── */
-        .loading {
-            display: flex; align-items: center; justify-content: center;
-            padding: 80px 0; color: var(--muted);
-            font-family: 'DM Mono', monospace; font-size: 13px;
-            gap: 10px;
-        }
-        .spinner {
-            width: 16px; height: 16px;
-            border: 2px solid var(--border);
-            border-top-color: var(--accent);
-            border-radius: 50%;
-            animation: spin .6s linear infinite;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
+        /* MY TICKETS */
+        .tickets-list { display: flex; flex-direction: column; gap: 12px; }
+        .ticket-row { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px 24px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+        .ticket-id    { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--muted); }
+        .ticket-event { font-size: 15px; font-weight: 500; }
+        .ticket-price { font-family: 'Bebas Neue', sans-serif; font-size: 22px; color: var(--accent); letter-spacing: 1px; }
+        .order-status { display: inline-block; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; font-family: 'DM Mono', monospace; padding: 4px 10px; border-radius: 100px; }
+        .order-CONFIRMED                  { background: rgba(232,255,71,.12); color: var(--accent); border: 1px solid rgba(232,255,71,.3); }
+        .order-PENDING                    { background: rgba(255,255,255,.06); color: var(--muted); border: 1px solid var(--border); }
+        .order-CANCELLED_SEATS_UNAVAILABLE,
+        .order-CANCELLED_EXPIRED          { background: rgba(255,71,71,.12); color: var(--accent2); border: 1px solid rgba(255,71,71,.3); }
 
-        /* ── TOAST ── */
-        #toast {
-            position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%) translateY(20px);
-            background: var(--surface); border: 1px solid var(--border);
-            padding: 12px 24px; border-radius: 100px;
-            font-size: 13px; font-family: 'DM Mono', monospace;
-            opacity: 0; transition: all .3s; pointer-events: none; z-index: 999;
-        }
+        /* ADMIN */
+        .admin-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+        @media (max-width: 700px) { .admin-grid { grid-template-columns: 1fr; } }
+        .admin-card { background: var(--surface); border: 1px solid var(--admin); border-radius: var(--radius); padding: 28px; }
+        .admin-card-title { font-family: 'Bebas Neue', sans-serif; font-size: 28px; letter-spacing: 2px; color: var(--admin); margin-bottom: 24px; }
+        .admin-event-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border); gap: 8px; flex-wrap: wrap; }
+        .admin-event-row:last-child { border-bottom: none; }
+        select.status-select { width: auto; padding: 6px 10px; font-size: 12px; }
+
+        /* LOADING / TOAST */
+        .loading { display: flex; align-items: center; justify-content: center; padding: 80px 0; color: var(--muted); font-family: 'DM Mono', monospace; font-size: 13px; gap: 10px; }
+        .spinner { width: 16px; height: 16px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin .6s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        #toast { position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--surface); border: 1px solid var(--border); padding: 12px 24px; border-radius: 100px; font-size: 13px; font-family: 'DM Mono', monospace; opacity: 0; transition: all .3s; pointer-events: none; z-index: 999; }
         #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
         #toast.error { border-color: var(--accent2); color: var(--accent2); }
+        #toast.success { border-color: var(--accent); color: var(--accent); }
 
-        @media (max-width: 600px) {
-            nav { padding: 16px 20px; }
-            .screen { padding: 40px 20px; }
-            .order-summary { padding: 16px 20px; }
-        }
+        @media (max-width: 600px) { nav { padding: 16px 20px; } .screen { padding: 40px 20px; } .order-summary { padding: 16px 20px; } }
     </style>
 </head>
 <body>
 
 <nav>
-    <div class="logo">TIXR</div>
+    <div class="logo" onclick="showEvents()">TIXR</div>
     <div class="nav-right">
         <span id="nav-user"></span>
-        <button id="nav-logout" style="display:none" onclick="logout()">Sign out</button>
+        <button class="nav-link" id="nav-my-tickets" style="display:none" onclick="showMyTickets()">My Tickets</button>
+        <button class="nav-link admin" id="nav-admin" style="display:none" onclick="showAdmin()">Admin</button>
+        <button class="nav-link" id="nav-logout" style="display:none" onclick="logout()">Sign out</button>
     </div>
 </nav>
 
@@ -318,12 +166,12 @@
     <div class="login-sub">Your ticket to the show</div>
     <div class="form-group">
         <label>Username</label>
-        <input type="text" id="login-username" placeholder="demo" value="demo" autocomplete="username">
+        <input type="text" id="login-username" value="demo" autocomplete="username">
         <div class="login-hint">demo / admin</div>
     </div>
     <div class="form-group">
         <label>Password</label>
-        <input type="password" id="login-password" placeholder="••••" value="demo" autocomplete="current-password">
+        <input type="password" id="login-password" value="demo" autocomplete="current-password">
     </div>
     <div class="error-msg" id="login-error"></div>
     <button class="btn btn-primary" onclick="login()">Enter →</button>
@@ -335,7 +183,7 @@
         <div class="page-title">Events</div>
         <div class="page-count" id="events-count"></div>
     </div>
-    <div id="events-list"><div class="loading"><div class="spinner"></div>Loading events...</div></div>
+    <div id="events-list"><div class="loading"><div class="spinner"></div>Loading...</div></div>
 </div>
 
 <!-- SEATS -->
@@ -350,11 +198,82 @@
     <div class="confirmation-card" id="confirm-card"></div>
 </div>
 
-<!-- ORDER SUMMARY BAR -->
+<!-- MY TICKETS -->
+<div id="screen-my-tickets" class="screen">
+    <div class="page-header">
+        <div class="page-title">My Tickets</div>
+    </div>
+    <div id="my-tickets-list"><div class="loading"><div class="spinner"></div>Loading...</div></div>
+</div>
+
+<!-- ADMIN -->
+<div id="screen-admin" class="screen">
+    <div class="page-header">
+        <div class="page-title" style="color:var(--admin)">Admin</div>
+    </div>
+    <div class="admin-grid">
+        <!-- Event management -->
+        <div>
+            <div class="admin-card" style="margin-bottom:24px">
+                <div class="admin-card-title">Events</div>
+                <div id="admin-events-list"><div class="loading"><div class="spinner"></div></div></div>
+            </div>
+            <!-- Create Event -->
+            <div class="admin-card">
+                <div class="admin-card-title">Create Event</div>
+                <div class="form-group"><label>Event Name</label><input type="text" id="new-event-name" placeholder="Summer Sound Festival"></div>
+                <div class="form-group"><label>Artist</label><input type="text" id="new-event-artist" placeholder="Various Artists"></div>
+                <div class="form-group"><label>Description</label><textarea id="new-event-desc" rows="2" placeholder="Description..."></textarea></div>
+                <div class="form-group"><label>Date & Time</label><input type="datetime-local" id="new-event-date"></div>
+                <div class="form-group"><label>Venue</label><select id="new-event-venue"><option value="">Loading venues...</option></select></div>
+                <div class="form-group"><label>Status</label>
+                    <select id="new-event-status">
+                        <option value="UPCOMING">UPCOMING</option>
+                        <option value="ON_SALE">ON_SALE</option>
+                    </select>
+                </div>
+                <button class="btn btn-primary btn-sm" style="width:100%;margin-top:16px" onclick="createEvent()">Create Event</button>
+            </div>
+        </div>
+        <!-- Venue + User management -->
+        <div>
+            <div class="admin-card" style="margin-bottom:24px">
+                <div class="admin-card-title">Create Venue</div>
+                <div class="form-group"><label>Venue Name</label><input type="text" id="new-venue-name" placeholder="Scandinavium"></div>
+                <div class="form-group"><label>City</label><input type="text" id="new-venue-city" placeholder="Gothenburg"></div>
+                <div class="form-group"><label>Country</label><input type="text" id="new-venue-country" placeholder="Sweden"></div>
+                <div class="form-group"><label>Capacity</label><input type="number" id="new-venue-capacity" placeholder="12000"></div>
+                <button class="btn btn-primary btn-sm" style="width:100%;margin-top:16px" onclick="createVenue()">Create Venue</button>
+            </div>
+
+            <!-- Users -->
+            <div class="admin-card" style="margin-bottom:24px">
+                <div class="admin-card-title">Users</div>
+                <div id="admin-users-list"><div class="loading"><div class="spinner"></div></div></div>
+            </div>
+
+            <!-- Create / Edit User -->
+            <div class="admin-card">
+                <div class="admin-card-title" id="user-form-title">Create User</div>
+                <input type="hidden" id="edit-user-id">
+                <div class="form-group"><label>Name</label><input type="text" id="user-name" placeholder="Demo User"></div>
+                <div class="form-group"><label>Username</label><input type="text" id="user-username" placeholder="demo"></div>
+                <div class="form-group"><label>Email</label><input type="text" id="user-email" placeholder="demo@example.com"></div>
+                <div style="display:flex;gap:8px;margin-top:16px">
+                    <button class="btn btn-primary btn-sm" style="flex:1" onclick="saveUser()">Save User</button>
+                    <button class="btn btn-ghost btn-sm" id="cancel-edit-btn" style="display:none" onclick="cancelEditUser()">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ORDER BAR -->
 <div class="order-summary hidden" id="order-bar">
     <div>
         <div class="summary-label">Selected</div>
         <div class="summary-seat" id="bar-seat"></div>
+        <div class="hold-timer" id="bar-timer"></div>
     </div>
     <div>
         <div class="summary-label">Total</div>
@@ -363,26 +282,19 @@
     <button class="btn btn-primary" style="width:auto" onclick="placeOrder()">Buy ticket →</button>
 </div>
 
-<!-- TOAST -->
 <div id="toast"></div>
 
 <script>
-    const API = '';  // same origin — BFF serves both
+    const API = '';
     let token = localStorage.getItem('tixr_token');
     let currentUser = JSON.parse(localStorage.getItem('tixr_user') || 'null');
     let selectedSeat = null;
     let currentEvent = null;
+    let holdTimerInterval = null;
+    let holdExpiresAt = null;
 
-    // ── Init ──────────────────────────────────────────────────────────────────
-
-    if (token && currentUser) {
-        setNavUser(currentUser.username);
-        showEvents();
-    }
-
-    document.getElementById('login-password').addEventListener('keydown', e => {
-        if (e.key === 'Enter') login();
-    });
+    if (token && currentUser) { setNavUser(currentUser); showEvents(); }
+    document.getElementById('login-password').addEventListener('keydown', e => { if (e.key === 'Enter') login(); });
 
     // ── Auth ──────────────────────────────────────────────────────────────────
 
@@ -390,11 +302,9 @@
         const username = document.getElementById('login-username').value.trim();
         const password = document.getElementById('login-password').value;
         document.getElementById('login-error').textContent = '';
-
         try {
             const res = await fetch(`${API}/api/login`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ username, password }),
             });
             if (!res.ok) throw new Error('Invalid credentials');
@@ -403,7 +313,7 @@
             currentUser = { username: data.username, role: data.role };
             localStorage.setItem('tixr_token', token);
             localStorage.setItem('tixr_user', JSON.stringify(currentUser));
-            setNavUser(data.username);
+            setNavUser(currentUser);
             showEvents();
         } catch (e) {
             document.getElementById('login-error').textContent = e.message;
@@ -412,26 +322,23 @@
 
     function logout() {
         token = null; currentUser = null;
-        localStorage.removeItem('tixr_token');
-        localStorage.removeItem('tixr_user');
-        setNavUser(null);
-        showScreen('login');
+        localStorage.removeItem('tixr_token'); localStorage.removeItem('tixr_user');
+        setNavUser(null); showScreen('login');
     }
 
-    function setNavUser(username) {
-        document.getElementById('nav-user').textContent = username ? `@${username}` : '';
-        document.getElementById('nav-logout').style.display = username ? 'block' : 'none';
+    function setNavUser(user) {
+        document.getElementById('nav-user').textContent = user ? `@${user.username}` : '';
+        document.getElementById('nav-logout').style.display     = user ? 'block' : 'none';
+        document.getElementById('nav-my-tickets').style.display = user ? 'block' : 'none';
+        document.getElementById('nav-admin').style.display      = (user?.role === 'ADMIN') ? 'block' : 'none';
     }
 
-    // ── API helper ────────────────────────────────────────────────────────────
+    // ── API ───────────────────────────────────────────────────────────────────
 
     async function api(method, path, body) {
         const res = await fetch(`${API}${path}`, {
             method,
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`,
-            },
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
             body: body ? JSON.stringify(body) : undefined,
         });
         if (res.status === 401) { logout(); return null; }
@@ -446,6 +353,7 @@
         document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
         document.getElementById(`screen-${name}`).classList.add('active');
         document.getElementById('order-bar').classList.add('hidden');
+        clearHoldTimer();
     }
 
     // ── Events ────────────────────────────────────────────────────────────────
@@ -454,42 +362,28 @@
         showScreen('events');
         const list = document.getElementById('events-list');
         list.innerHTML = '<div class="loading"><div class="spinner"></div>Loading events...</div>';
-
         const result = await api('GET', '/api/events');
         if (!result) return;
-
         const events = result.data;
         document.getElementById('events-count').textContent = `${events.length} events`;
-
-        if (!events.length) {
-            list.innerHTML = '<div class="no-seats">No events found.</div>';
-            return;
-        }
-
-        list.innerHTML = `
-      <div class="events-grid">
-        ${events.map(e => `
-          <div class="event-card" onclick='selectEvent(${JSON.stringify(e)})'>
-            <div class="event-status status-${e.status}">${e.status.replace('_', ' ')}</div>
-            <div class="event-artist">${e.artist}</div>
-            <div class="event-name">${e.name}</div>
-            <div class="event-meta">
-              <span><b>${formatDate(e.eventDate)}</b></span>
-              <span><b>${e.venue?.name || '—'}</b>, ${e.venue?.city || ''}</span>
-            </div>
-          </div>
-        `).join('')}
-      </div>
-    `;
+        if (!events.length) { list.innerHTML = '<div class="no-seats">No events found.</div>'; return; }
+        list.innerHTML = `<div class="events-grid">${events.map(e => `
+      <div class="event-card" onclick='selectEvent(${JSON.stringify(e)})'>
+        <div class="event-status status-${e.status}">${e.status.replace('_',' ')}</div>
+        <div class="event-artist">${e.artist}</div>
+        <div class="event-name">${e.name}</div>
+        <div class="event-meta">
+          <span><b>${formatDate(e.eventDate)}</b></span>
+          <span><b>${e.venue?.name || '—'}</b>, ${e.venue?.city || ''}</span>
+        </div>
+      </div>`).join('')}</div>`;
     }
 
     // ── Seats ─────────────────────────────────────────────────────────────────
 
     async function selectEvent(event) {
-        currentEvent = event;
-        selectedSeat = null;
+        currentEvent = event; selectedSeat = null;
         showScreen('seats');
-
         document.getElementById('seats-hero').innerHTML = `
       <div>
         <div class="event-hero-artist">${event.artist}</div>
@@ -498,129 +392,354 @@
       <div style="text-align:right">
         <div class="event-hero-sub">${formatDate(event.eventDate)}</div>
         <div class="event-hero-sub">${event.venue?.name}, ${event.venue?.city}</div>
-      </div>
-    `;
+      </div>`;
 
+        await loadSeats();
+    }
+
+    async function loadSeats() {
         const content = document.getElementById('seats-content');
         content.innerHTML = '<div class="loading"><div class="spinner"></div>Loading seats...</div>';
-
-        const result = await api('GET', `/api/inventory/events/${event.id}/seats`);
+        const result = await api('GET', `/api/inventory/events/${currentEvent.id}/seats`);
         if (!result) return;
-
         const seats = result.data;
-
-        if (!seats.length) {
-            content.innerHTML = '<div class="no-seats">No seats available for this event.</div>';
-            return;
-        }
-
-        // Group by section
+        if (!seats.length) { content.innerHTML = '<div class="no-seats">No seats available.</div>'; return; }
         const sections = {};
-        seats.forEach(s => {
-            if (!sections[s.section]) sections[s.section] = [];
-            sections[s.section].push(s);
-        });
-
+        seats.forEach(s => { if (!sections[s.section]) sections[s.section] = []; sections[s.section].push(s); });
         content.innerHTML = Object.entries(sections).map(([section, sectionSeats]) => `
       <div class="seats-section">
         <div class="section-label">${section} · ${sectionSeats.length} available</div>
-        <div class="seats-grid">
-          ${sectionSeats.map(s => `
-            <div class="seat-card" id="seat-${s.id}" onclick='pickSeat(${JSON.stringify(s)})'>
-              <div class="seat-number">${s.seatNumber}</div>
-              <div class="seat-price">${s.price} SEK</div>
-            </div>
-          `).join('')}
+        <div class="seats-grid">${sectionSeats.map(s => `
+          <div class="seat-card" id="seat-${s.id}" onclick='pickSeat(${JSON.stringify(s)})'>
+            <div class="seat-number">${s.seatNumber}</div>
+            <div class="seat-price">${s.price} SEK</div>
+          </div>`).join('')}
         </div>
-      </div>
-    `).join('');
+      </div>`).join('');
     }
 
-    function pickSeat(seat) {
-        // Deselect previous
-        if (selectedSeat) {
-            document.getElementById(`seat-${selectedSeat.id}`)?.classList.remove('selected');
+    async function pickSeat(seat) {
+        // Release previous hold
+        if (selectedSeat && selectedSeat.id !== seat.id) {
+            await api('POST', `/api/inventory/seats/${selectedSeat.id}/release`);
+            document.getElementById(`seat-${selectedSeat.id}`)?.classList.remove('selected', 'held-by-me');
+            clearHoldTimer();
         }
+
+        // Place 5-minute hold on new seat
+        const holdResult = await api('POST', `/api/inventory/seats/${seat.id}/hold`);
+        if (!holdResult || !holdResult.ok) {
+            showToast('Seat is no longer available', true);
+            document.getElementById(`seat-${seat.id}`)?.remove();
+            selectedSeat = null;
+            document.getElementById('order-bar').classList.add('hidden');
+            return;
+        }
+
         selectedSeat = seat;
-        document.getElementById(`seat-${seat.id}`).classList.add('selected');
+        document.querySelectorAll('.seat-card').forEach(c => c.classList.remove('selected', 'held-by-me'));
+        const card = document.getElementById(`seat-${seat.id}`);
+        card?.classList.add('selected', 'held-by-me');
+
+        // Start 5-minute countdown
+        holdExpiresAt = Date.now() + 5 * 60 * 1000;
+        startHoldTimer();
 
         // Show order bar
         const bar = document.getElementById('order-bar');
         bar.classList.remove('hidden');
         document.getElementById('bar-seat').textContent = `${seat.section} · ${seat.seatNumber}`;
         document.getElementById('bar-price').textContent = `${seat.price} SEK`;
+        showToast(`Seat ${seat.seatNumber} held for 5 minutes`, false);
+    }
+
+    function startHoldTimer() {
+        clearHoldTimer();
+        holdTimerInterval = setInterval(() => {
+            const remaining = Math.max(0, Math.ceil((holdExpiresAt - Date.now()) / 1000));
+            const m = Math.floor(remaining / 60);
+            const s = remaining % 60;
+            const timerEl = document.getElementById('bar-timer');
+            if (timerEl) timerEl.textContent = `Hold expires in ${m}:${String(s).padStart(2,'0')}`;
+            if (remaining === 0) {
+                clearHoldTimer();
+                selectedSeat = null;
+                document.getElementById('order-bar').classList.add('hidden');
+                showToast('Seat hold expired — please select again', true);
+                loadSeats();
+            }
+        }, 1000);
+    }
+
+    function clearHoldTimer() {
+        if (holdTimerInterval) { clearInterval(holdTimerInterval); holdTimerInterval = null; }
+        const t = document.getElementById('bar-timer');
+        if (t) t.textContent = '';
     }
 
     // ── Order ─────────────────────────────────────────────────────────────────
 
     async function placeOrder() {
         if (!selectedSeat || !currentEvent) return;
-
         const result = await api('POST', '/api/orders', {
             ticketEventId: currentEvent.id,
             seatId:        selectedSeat.id,
             quantity:      1,
             totalPrice:    selectedSeat.price,
         });
-
         if (!result) return;
-
         if (!result.ok) {
             showToast(result.data?.message || 'Could not place order', true);
             return;
         }
 
-        showConfirmation(result.data);
+        clearHoldTimer();
+        showScreen('confirm');
+        document.getElementById('confirm-card').innerHTML = `
+      <div class="confirm-icon">⏳</div>
+      <div class="confirm-title">Processing</div>
+      <div class="confirm-sub">Confirming your seat...</div>`;
+
+        const finalOrder = await pollOrderStatus(result.data.id);
+
+        if (finalOrder.status === 'CONFIRMED') {
+            showConfirmation(finalOrder);
+        } else {
+            // Remove the unavailable seat from the seat grid
+            document.getElementById(`seat-${selectedSeat.id}`)?.remove();
+            selectedSeat = null;
+            showScreen('seats');
+            showToast('Seat no longer available — please choose another', true);
+            await loadSeats();
+        }
     }
 
-    // ── Confirmation ──────────────────────────────────────────────────────────
+    async function pollOrderStatus(orderId, attempts = 0) {
+        if (attempts > 15) return { status: 'UNKNOWN' };
+        const result = await api('GET', `/api/orders/${orderId}`);
+        if (!result || !result.ok) return { status: 'UNKNOWN' };
+        if (result.data.status !== 'PENDING') return result.data;
+        await new Promise(r => setTimeout(r, 1000));
+        return pollOrderStatus(orderId, attempts + 1);
+    }
 
     function showConfirmation(order) {
         showScreen('confirm');
         document.getElementById('confirm-card').innerHTML = `
       <div class="confirm-icon">🎟</div>
       <div class="confirm-title">You're in!</div>
-      <div class="confirm-sub">Your order is confirmed. Check your email for details.</div>
-      <div class="confirm-detail">
-        <span>Order ID</span>
-        <span>#${order.id}</span>
-      </div>
-      <div class="confirm-detail">
-        <span>Event</span>
-        <span>${currentEvent.artist}</span>
-      </div>
-      <div class="confirm-detail">
-        <span>Seat</span>
-        <span>${selectedSeat.section} · ${selectedSeat.seatNumber}</span>
-      </div>
-      <div class="confirm-detail">
-        <span>Total</span>
-        <span>${selectedSeat.price} SEK</span>
-      </div>
-      <div class="confirm-detail">
-        <span>Status</span>
-        <span>${order.status}</span>
-      </div>
+      <div class="confirm-sub">Check your email for details.</div>
+      <div class="confirm-detail"><span>Order ID</span><span>#${order.id}</span></div>
+      <div class="confirm-detail"><span>Event</span><span>${currentEvent.artist}</span></div>
+      <div class="confirm-detail"><span>Seat</span><span>${selectedSeat.section} · ${selectedSeat.seatNumber}</span></div>
+      <div class="confirm-detail"><span>Total</span><span>${selectedSeat.price} SEK</span></div>
+      <div class="confirm-detail"><span>Status</span><span>${order.status}</span></div>
       <br>
-      <button class="btn btn-ghost" style="width:100%" onclick="showEvents()">Browse more events</button>
-    `;
+      <button class="btn btn-ghost" style="width:100%" onclick="showEvents()">Browse more events</button>`;
+    }
+
+    // ── My Tickets ────────────────────────────────────────────────────────────
+
+    async function showMyTickets() {
+        showScreen('my-tickets');
+        const list = document.getElementById('my-tickets-list');
+        list.innerHTML = '<div class="loading"><div class="spinner"></div>Loading...</div>';
+
+        const result = await api('GET', '/api/orders/my');
+        if (!result || !result.ok) { list.innerHTML = '<div class="no-seats">Could not load tickets.</div>'; return; }
+
+        const orders = result.data;
+        if (!orders.length) { list.innerHTML = '<div class="no-seats">No tickets yet. Go buy some!</div>'; return; }
+
+        // Fetch event names for each unique ticketEventId
+        const eventIds = [...new Set(orders.map(o => o.ticketEventId))];
+        const eventMap = {};
+        await Promise.all(eventIds.map(async id => {
+            const r = await api('GET', `/api/events/${id}`);
+            if (r?.ok) eventMap[id] = r.data;
+        }));
+
+        list.innerHTML = `<div class="tickets-list">${orders.map(o => {
+            const ev = eventMap[o.ticketEventId];
+            return `
+        <div class="ticket-row">
+          <div>
+            <div class="ticket-id">Order #${o.id}</div>
+            <div class="ticket-event">${ev?.artist || 'Unknown Event'}</div>
+            <div style="font-size:12px;color:var(--muted);margin-top:4px">${ev ? formatDate(ev.eventDate) : ''}</div>
+          </div>
+          <div style="text-align:right">
+            <span class="order-status order-${o.status}">${o.status.replace(/_/g,' ')}</span>
+            <div class="ticket-price" style="margin-top:8px">${o.totalPrice} SEK</div>
+          </div>
+        </div>`;
+        }).join('')}</div>`;
+    }
+
+    // ── Admin ─────────────────────────────────────────────────────────────────
+
+    async function showAdmin() {
+        if (currentUser?.role !== 'ADMIN') return;
+        showScreen('admin');
+        loadAdminEvents();
+        loadVenuesIntoSelect();
+        loadAdminUsers();
+    }
+
+    // ── User CRUD ─────────────────────────────────────────────────────────────
+
+    async function loadAdminUsers() {
+        const list = document.getElementById('admin-users-list');
+        list.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+        const result = await api('GET', '/api/users');
+        if (!result?.ok) { list.innerHTML = '<p style="color:var(--muted)">Could not load users.</p>'; return; }
+        const users = result.data;
+        if (!users.length) { list.innerHTML = '<p style="color:var(--muted)">No users yet.</p>'; return; }
+        list.innerHTML = users.map(u => `
+      <div class="admin-event-row">
+        <div>
+          <div style="font-size:14px;font-weight:500">${u.name}</div>
+          <div style="font-size:12px;color:var(--muted);font-family:DM Mono,monospace">${u.username} · ${u.email}</div>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-admin btn-sm" onclick='editUser(${JSON.stringify(u)})'>Edit</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteUser(${u.id})">✕</button>
+        </div>
+      </div>`).join('');
+    }
+
+    function editUser(user) {
+        document.getElementById('edit-user-id').value   = user.id;
+        document.getElementById('user-name').value      = user.name;
+        document.getElementById('user-username').value  = user.username;
+        document.getElementById('user-email').value     = user.email;
+        document.getElementById('user-form-title').textContent = 'Edit User';
+        document.getElementById('cancel-edit-btn').style.display = 'block';
+        document.getElementById('user-name').focus();
+    }
+
+    function cancelEditUser() {
+        document.getElementById('edit-user-id').value   = '';
+        document.getElementById('user-name').value      = '';
+        document.getElementById('user-username').value  = '';
+        document.getElementById('user-email').value     = '';
+        document.getElementById('user-form-title').textContent = 'Create User';
+        document.getElementById('cancel-edit-btn').style.display = 'none';
+    }
+
+    async function saveUser() {
+        const id       = document.getElementById('edit-user-id').value;
+        const body = {
+            name:     document.getElementById('user-name').value,
+            username: document.getElementById('user-username').value,
+            email:    document.getElementById('user-email').value,
+        };
+        if (!body.name || !body.username || !body.email) {
+            showToast('Fill in all user fields', true); return;
+        }
+        const result = id
+            ? await api('PUT',  `/api/users/${id}`, body)
+            : await api('POST', '/api/users', body);
+
+        if (result?.ok) {
+            showToast(id ? 'User updated!' : 'User created!', false);
+            cancelEditUser();
+            loadAdminUsers();
+        } else {
+            showToast('Could not save user', true);
+        }
+    }
+
+    async function deleteUser(userId) {
+        if (!confirm('Delete this user?')) return;
+        const result = await api('DELETE', `/api/users/${userId}`);
+        if (result?.ok) { showToast('User deleted'); loadAdminUsers(); }
+        else showToast('Could not delete user', true);
+    }
+
+    async function loadAdminEvents() {
+        const list = document.getElementById('admin-events-list');
+        list.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+        const result = await api('GET', '/api/events');
+        if (!result?.ok) { list.innerHTML = '<p style="color:var(--muted)">Could not load events.</p>'; return; }
+        const events = result.data;
+        if (!events.length) { list.innerHTML = '<p style="color:var(--muted)">No events yet.</p>'; return; }
+        list.innerHTML = events.map(e => `
+      <div class="admin-event-row">
+        <div>
+          <div style="font-size:14px;font-weight:500">${e.artist}</div>
+          <div style="font-size:12px;color:var(--muted)">${e.name}</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <select class="status-select" onchange="updateEventStatus(${e.id}, this.value)">
+            ${['UPCOMING','ON_SALE','SOLD_OUT','CANCELLED'].map(s =>
+            `<option value="${s}" ${e.status===s?'selected':''}>${s}</option>`
+        ).join('')}
+          </select>
+          <button class="btn btn-danger" style="padding:6px 12px" onclick="deleteEvent(${e.id})">✕</button>
+        </div>
+      </div>`).join('');
+    }
+
+    async function loadVenuesIntoSelect() {
+        const result = await api('GET', '/api/venues');
+        if (!result?.ok) return;
+        const select = document.getElementById('new-event-venue');
+        select.innerHTML = result.data.map(v => `<option value="${v.id}">${v.name}, ${v.city}</option>`).join('');
+    }
+
+    async function updateEventStatus(eventId, status) {
+        await api('PATCH', `/api/events/${eventId}/status?status=${status}`);
+        showToast('Status updated', false);
+    }
+
+    async function deleteEvent(eventId) {
+        if (!confirm('Delete this event?')) return;
+        const result = await api('DELETE', `/api/events/${eventId}`);
+        if (result?.ok) { showToast('Event deleted'); loadAdminEvents(); }
+        else showToast('Could not delete event', true);
+    }
+
+    async function createEvent() {
+        const body = {
+            name:        document.getElementById('new-event-name').value,
+            artist:      document.getElementById('new-event-artist').value,
+            description: document.getElementById('new-event-desc').value,
+            eventDate:   document.getElementById('new-event-date').value,
+            status:      document.getElementById('new-event-status').value,
+            venue: { id: parseInt(document.getElementById('new-event-venue').value) }
+        };
+        if (!body.name || !body.artist || !body.eventDate) { showToast('Fill in all required fields', true); return; }
+        const result = await api('POST', '/api/events', body);
+        if (result?.ok) { showToast('Event created!', false); loadAdminEvents(); }
+        else showToast('Could not create event', true);
+    }
+
+    async function createVenue() {
+        const body = {
+            name:     document.getElementById('new-venue-name').value,
+            city:     document.getElementById('new-venue-city').value,
+            country:  document.getElementById('new-venue-country').value,
+            capacity: parseInt(document.getElementById('new-venue-capacity').value),
+        };
+        if (!body.name || !body.city) { showToast('Fill in required fields', true); return; }
+        const result = await api('POST', '/api/venues', body);
+        if (result?.ok) { showToast('Venue created!', false); loadVenuesIntoSelect(); }
+        else showToast('Could not create venue', true);
     }
 
     // ── Helpers ───────────────────────────────────────────────────────────────
 
-    function formatDate(isoDate) {
-        if (!isoDate) return '—';
-        return new Date(isoDate).toLocaleDateString('en-SE', {
-            weekday: 'short', year: 'numeric', month: 'short', day: 'numeric',
-            hour: '2-digit', minute: '2-digit',
-        });
+    function formatDate(iso) {
+        if (!iso) return '—';
+        return new Date(iso).toLocaleDateString('en-SE', { weekday:'short', year:'numeric', month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' });
     }
 
     function showToast(msg, isError = false) {
         const t = document.getElementById('toast');
         t.textContent = msg;
-        t.className = 'show' + (isError ? ' error' : '');
-        setTimeout(() => { t.className = ''; }, 3000);
+        t.className = 'show' + (isError ? ' error' : ' success');
+        setTimeout(() => { t.className = ''; }, 3500);
     }
 </script>
 </body>

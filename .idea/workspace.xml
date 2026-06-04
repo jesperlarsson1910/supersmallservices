@@ -5,17 +5,61 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="be28081d-fe39-40a5-9b79-d8f65e2c48ba" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/inventoryservice/src/main/java/org/example/inventoryservice/grpc/GrpcServerLifecycle.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/inventoryservice/src/main/java/org/example/inventoryservice/grpc/InventoryGrpcServer.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/inventoryservice/src/main/proto/inventory.proto" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/orderservice/src/main/java/org/example/orderservice/grpc/InventoryGrpcClient.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/orderservice/src/main/java/org/example/orderservice/grpc/OrderService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/orderservice/src/main/java/org/example/orderservice/grpc/SeatUnavailableException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inventoryservice/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/inventoryservice/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inventoryservice/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/inventoryservice/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventoryservice/src/main/java/org/example/inventoryservice/service/InventoryService.java" beforeDir="false" afterPath="$PROJECT_DIR$/inventoryservice/src/main/java/org/example/inventoryservice/service/InventoryService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/notificationservice/src/main/java/org/example/grpc/client/UserGrpcClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/notificationservice/src/main/java/org/example/grpc/client/UserGrpcClient.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/notificationservice/src/main/proto/user.proto" beforeDir="false" afterPath="$PROJECT_DIR$/notificationservice/src/main/proto/user.proto" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/notificationservice/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/notificationservice/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/orderservice/src/main/java/org/example/event/TicketOrderPlacedEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/orderservice/src/main/java/org/example/event/TicketOrderPlacedEvent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/orderservice/src/main/java/org/example/grpc/client/UserGrpcClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/orderservice/src/main/java/org/example/grpc/client/UserGrpcClient.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/orderservice/src/main/java/org/example/orderservice/exception/GlobalExceptionHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/orderservice/src/main/java/org/example/orderservice/exception/GlobalExceptionHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/orderservice/src/main/java/org/example/orderservice/repository/TicketOrderRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/orderservice/src/main/java/org/example/orderservice/repository/TicketOrderRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/orderservice/src/main/java/org/example/orderservice/service/OrderService.java" beforeDir="false" afterPath="$PROJECT_DIR$/orderservice/src/main/java/org/example/orderservice/service/OrderService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/orderservice/src/main/proto/user.proto" beforeDir="false" afterPath="$PROJECT_DIR$/orderservice/src/main/proto/user.proto" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/orderservice/src/test/java/org/example/orderservice/OrderServiceIntegrationTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/orderservice/src/test/java/org/example/orderservice/OrderServiceIntegrationTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/userservice/src/main/java/org/example/userservice/config/DataInitializer.java" beforeDir="false" afterPath="$PROJECT_DIR$/userservice/src/main/java/org/example/userservice/config/DataInitializer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/userservice/src/main/java/org/example/userservice/controller/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/userservice/src/main/java/org/example/userservice/controller/UserController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/userservice/src/main/java/org/example/userservice/grpc/GrpcServerLifecycle.java" beforeDir="false" afterPath="$PROJECT_DIR$/userservice/src/main/java/org/example/userservice/grpc/GrpcServerLifecycle.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/userservice/src/main/java/org/example/userservice/grpc/UserGrpcServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/userservice/src/main/java/org/example/userservice/grpc/UserGrpcServer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/userservice/src/main/java/org/example/userservice/model/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/userservice/src/main/java/org/example/userservice/model/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/userservice/src/main/java/org/example/userservice/repository/UserRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/userservice/src/main/java/org/example/userservice/repository/UserRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/userservice/src/main/java/org/example/userservice/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/userservice/src/main/java/org/example/userservice/service/UserService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/userservice/src/main/proto/user.proto" beforeDir="false" afterPath="$PROJECT_DIR$/userservice/src/main/proto/user.proto" afterDir="false" />
+    </list>
+    <list id="caa3af00-df01-4060-adf6-caf22536675f" name="Changes by ITHS-VM" comment="">
+      <change beforePath="$PROJECT_DIR$/bff/src/main/java/org/example/bff/controller/GatewayController.java" beforeDir="false" afterPath="$PROJECT_DIR$/bff/src/main/java/org/example/bff/controller/GatewayController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bff/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/bff/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bff/src/main/resources/static/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/bff/src/main/resources/static/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/eventservice/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/eventservice/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/eventservice/src/main/java/org/example/eventservice/service/EventService.java" beforeDir="false" afterPath="$PROJECT_DIR$/eventservice/src/main/java/org/example/eventservice/service/EventService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/eventservice/src/test/java/org/example/eventservice/EventServiceIntegrationTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/eventservice/src/test/java/org/example/eventservice/EventServiceIntegrationTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventoryservice/src/main/java/org/example/event/TicketOrderPlacedEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/inventoryservice/src/main/java/org/example/event/TicketOrderPlacedEvent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventoryservice/src/main/java/org/example/inventoryservice/controller/InventoryController.java" beforeDir="false" afterPath="$PROJECT_DIR$/inventoryservice/src/main/java/org/example/inventoryservice/controller/InventoryController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventoryservice/src/main/java/org/example/inventoryservice/grpc/InventoryGrpcServer.java" beforeDir="false" afterPath="$PROJECT_DIR$/inventoryservice/src/main/java/org/example/inventoryservice/grpc/InventoryGrpcServer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventoryservice/src/main/java/org/example/inventoryservice/model/Seat.java" beforeDir="false" afterPath="$PROJECT_DIR$/inventoryservice/src/main/java/org/example/inventoryservice/model/Seat.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventoryservice/src/main/proto/inventory.proto" beforeDir="false" afterPath="$PROJECT_DIR$/inventoryservice/src/main/proto/inventory.proto" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/k8s/bff.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/k8s/bff.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/notificationservice/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/notificationservice/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/notificationservice/src/main/java/org/example/notificationservice/NotificationServiceApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/notificationservice/src/main/java/org/example/notificationservice/NotificationServiceApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/notificationservice/src/main/java/org/example/notificationservice/model/TicketPurchasedEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/notificationservice/src/main/java/org/example/notificationservice/model/TicketPurchasedEvent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/notificationservice/src/main/java/org/example/notificationservice/service/EmailNotificationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/notificationservice/src/main/java/org/example/notificationservice/service/EmailNotificationService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/notificationservice/src/main/java/org/example/notificationservice/service/NotificationListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/notificationservice/src/main/java/org/example/notificationservice/service/NotificationListener.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/orderservice/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/orderservice/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/orderservice/src/main/java/org/example/orderservice/OrderServiceApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/orderservice/src/main/java/org/example/orderservice/OrderServiceApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/orderservice/src/main/java/org/example/orderservice/controller/OrderController.java" beforeDir="false" afterPath="$PROJECT_DIR$/orderservice/src/main/java/org/example/orderservice/controller/OrderController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/orderservice/src/main/java/org/example/orderservice/grpc/InventoryGrpcClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/orderservice/src/main/java/org/example/orderservice/grpc/InventoryGrpcClient.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/orderservice/src/main/java/org/example/orderservice/service/OrderSagaListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/orderservice/src/main/java/org/example/orderservice/service/OrderSagaListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/orderservice/src/main/java/org/example/orderservice/service/OrderService.java" beforeDir="false" afterPath="$PROJECT_DIR$/orderservice/src/main/java/org/example/orderservice/service/OrderService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/orderservice/src/main/proto/inventory.proto" beforeDir="false" afterPath="$PROJECT_DIR$/orderservice/src/main/proto/inventory.proto" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/orderservice/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/orderservice/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/orderservice/src/test/java/org/example/orderservice/OrderServiceIntegrationTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/orderservice/src/test/java/org/example/orderservice/OrderServiceIntegrationTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/orderservice/src/test/resources/application-test.properties" beforeDir="false" afterPath="$PROJECT_DIR$/orderservice/src/test/resources/application-test.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -44,6 +88,14 @@
       </state>
     </system>
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Interface" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
@@ -56,13 +108,47 @@
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://github.com/jesperlarsson1910/supersmallservices.git&quot;,
-    &quot;accountId&quot;: &quot;84e9b36a-acc8-4a6a-a3a5-4bf45c1315e0&quot;
+    &quot;accountId&quot;: &quot;0336459a-7baa-4630-898c-d3d7169a957a&quot;
   }
 }</component>
   <component name="KubernetesApiPersistence">{}</component>
   <component name="KubernetesApiProvider">{
+  &quot;configuredContexts&quot;: [
+    {
+      &quot;name&quot;: &quot;docker-desktop&quot;,
+      &quot;kubeConfigUrl&quot;: &quot;file://C:/Users/Jesper/.kube/config&quot;
+    }
+  ],
   &quot;isMigrated&quot;: true
 }</component>
+  <component name="LineStatusTrackerManager">
+    <file path="$PROJECT_DIR$/orderservice/src/main/java/org/example/orderservice/service/OrderService.java">
+      <ranges>
+        <range start1="5" end1="5" start2="5" end2="8" changelist="be28081d-fe39-40a5-9b79-d8f65e2c48ba" />
+        <range start1="9" end1="9" start2="12" end2="14" changelist="be28081d-fe39-40a5-9b79-d8f65e2c48ba" />
+        <range start1="12" end1="12" start2="17" end2="18" changelist="be28081d-fe39-40a5-9b79-d8f65e2c48ba" />
+        <range start1="17" end1="17" start2="23" end2="25" changelist="be28081d-fe39-40a5-9b79-d8f65e2c48ba" />
+        <range start1="20" end1="20" start2="28" end2="29" changelist="be28081d-fe39-40a5-9b79-d8f65e2c48ba" />
+        <range start1="23" end1="27" start2="32" end2="38" changelist="be28081d-fe39-40a5-9b79-d8f65e2c48ba" />
+        <range start1="31" end1="31" start2="42" end2="57" changelist="be28081d-fe39-40a5-9b79-d8f65e2c48ba" />
+        <range start1="39" end1="40" start2="65" end2="67" changelist="caa3af00-df01-4060-adf6-caf22536675f" />
+        <range start1="42" end1="53" start2="69" end2="73" changelist="be28081d-fe39-40a5-9b79-d8f65e2c48ba" />
+        <range start1="69" end1="69" start2="89" end2="93" changelist="be28081d-fe39-40a5-9b79-d8f65e2c48ba" />
+      </ranges>
+    </file>
+    <file path="$PROJECT_DIR$/orderservice/src/test/java/org/example/orderservice/OrderServiceIntegrationTest.java">
+      <ranges>
+        <range start1="2" end1="3" start2="2" end2="5" changelist="caa3af00-df01-4060-adf6-caf22536675f" />
+        <range start1="9" end1="10" start2="11" end2="12" changelist="caa3af00-df01-4060-adf6-caf22536675f" />
+        <range start1="11" end1="12" start2="13" end2="13" changelist="caa3af00-df01-4060-adf6-caf22536675f" />
+        <range start1="15" end1="16" start2="16" end2="16" changelist="caa3af00-df01-4060-adf6-caf22536675f" />
+        <range start1="37" end1="38" start2="37" end2="39" changelist="caa3af00-df01-4060-adf6-caf22536675f" />
+        <range start1="48" end1="49" start2="49" end2="50" changelist="be28081d-fe39-40a5-9b79-d8f65e2c48ba" />
+        <range start1="75" end1="76" start2="76" end2="77" changelist="be28081d-fe39-40a5-9b79-d8f65e2c48ba" />
+        <range start1="98" end1="99" start2="99" end2="100" changelist="be28081d-fe39-40a5-9b79-d8f65e2c48ba" />
+      </ranges>
+    </file>
+  </component>
   <component name="MavenImportPreferences">
     <option name="generalSettings">
       <MavenGeneralSettings>
@@ -82,32 +168,54 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "JUnit.EventServiceIntegrationTest.executor": "Run",
+    "JUnit.InventoryServiceIntegrationTest.executor": "Run",
+    "JUnit.OrderServiceIntegrationTest.executor": "Run",
+    "JUnit.OrderServiceIntegrationTest.getOrder_notFound_returns500.executor": "Run",
+    "JUnit.OrderServiceIntegrationTest.placeOrder_seatUnavailable_returnsConflict.executor": "Run",
+    "Maven.authservice [compile].executor": "Run",
+    "Maven.bff [compile].executor": "Run",
+    "Maven.botservice [compile].executor": "Run",
+    "Maven.event-service [compile].executor": "Run",
+    "Maven.eventservice [compile].executor": "Run",
+    "Maven.eventservice [test].executor": "Run",
+    "Maven.inventoryservice [compile].executor": "Run",
+    "Maven.notificationservice [compile].executor": "Run",
+    "Maven.orderservice [compile].executor": "Run",
+    "Maven.userservice [compile].executor": "Run",
+    "Maven.userservice [deploy].executor": "Run",
+    "Maven.userservice [org.xolstice.maven.plugins:protobuf-maven-plugin:0.6.1:compile].executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
     "RunOnceActivity.typescript.service.memoryLimit.init": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "SHELLCHECK.PATH": "I do mind",
     "git-widget-placeholder": "main",
     "ignore.virus.scanning.warn.message": "true",
+    "javascript.preferred.runtime.type.id": "node",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/ITHS-VM/IdeaProjects/supersmallservices/orderservice/src/main/java/org/example/orderservice/grpc",
+    "last_opened_file_path": "C:/Users/Jesper/IdeaProjects/supersmallservices/userservice",
     "node.js.detected.package.eslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
+    "nodejs_interpreter_path": "node",
+    "nodejs_package_manager_path": "C:\\Users\\Jesper\\IdeaProjects\\supersmallservices\\ticketbff",
     "project.structure.last.edited": "Modules",
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.2",
     "run.configurations.included.in.services": "true",
-    "settings.editor.selected.configurable": "settings.javascript.prettier",
+    "settings.editor.selected.configurable": "settings.javascript.runtime",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Jesper\IdeaProjects\supersmallservices\userservice" />
       <recent name="C:\Users\ITHS-VM\IdeaProjects\supersmallservices\inventoryservice\src\main\java\org\example\grcp" />
       <recent name="C:\Users\ITHS-VM\IdeaProjects\supersmallservices\eventservice\src\test\java\org\example\eventservice" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Jesper\IdeaProjects\supersmallservices" />
       <recent name="C:\Users\ITHS-VM\IdeaProjects\supersmallservices\eventservice" />
       <recent name="C:\Users\ITHS-VM\IdeaProjects\supersmallservices" />
       <recent name="C:\Users\ITHS-VM\IdeaProjects\supersmallservices\inventoryservice\src\main\java\org\example\event" />
@@ -123,7 +231,84 @@
       </set>
     </option>
   </component>
-  <component name="RunManager" selected="Spring Boot.BffApplication">
+  <component name="RunManager" selected="JUnit.InventoryServiceIntegrationTest">
+    <configuration name="EventServiceIntegrationTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="eventservice" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.example.eventservice.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="org.example.eventservice" />
+      <option name="MAIN_CLASS_NAME" value="org.example.eventservice.EventServiceIntegrationTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="InventoryServiceIntegrationTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="inventoryservice" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.example.inventoryservice.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="org.example.inventoryservice" />
+      <option name="MAIN_CLASS_NAME" value="org.example.inventoryservice.InventoryServiceIntegrationTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="OrderServiceIntegrationTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="orderservice" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.example.orderservice.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="org.example.orderservice" />
+      <option name="MAIN_CLASS_NAME" value="org.example.orderservice.OrderServiceIntegrationTest" />
+      <option name="TEST_OBJECT" value="class" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="OrderServiceIntegrationTest.getOrder_notFound_returns500" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="orderservice" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.example.orderservice.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="org.example.orderservice" />
+      <option name="MAIN_CLASS_NAME" value="org.example.orderservice.OrderServiceIntegrationTest" />
+      <option name="METHOD_NAME" value="getOrder_notFound_returns500" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="OrderServiceIntegrationTest.placeOrder_seatUnavailable_returnsConflict" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="orderservice" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="org.example.orderservice.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="org.example.orderservice" />
+      <option name="MAIN_CLASS_NAME" value="org.example.orderservice.OrderServiceIntegrationTest" />
+      <option name="METHOD_NAME" value="placeOrder_seatUnavailable_returnsConflict" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="AuthserviceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
       <module name="authservice" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="org.example.authservice.AuthserviceApplication" />
@@ -134,6 +319,13 @@
     <configuration name="BffApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
       <module name="bff" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="org.example.bff.BffApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="BotServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="botservice" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="org.example.botservice.BotServiceApplication" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -166,6 +358,13 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="NotificationServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="notificationservice" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="org.example.notificationservice.NotificationServiceApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="OrderServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
       <module name="orderservice" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="org.example.orderservice.OrderServiceApplication" />
@@ -173,6 +372,29 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="UserServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="userservice" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="org.example.userservice.UserServiceApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="UserserviceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="userservice" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="org.example.userservice.UserserviceApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="JUnit.EventServiceIntegrationTest" />
+        <item itemvalue="JUnit.OrderServiceIntegrationTest.placeOrder_seatUnavailable_returnsConflict" />
+        <item itemvalue="JUnit.OrderServiceIntegrationTest.getOrder_notFound_returns500" />
+        <item itemvalue="JUnit.OrderServiceIntegrationTest" />
+        <item itemvalue="JUnit.InventoryServiceIntegrationTest" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
@@ -198,11 +420,31 @@
       <workItem from="1779968831244" duration="3695000" />
       <workItem from="1779976145683" duration="544000" />
       <workItem from="1779991905657" duration="2411000" />
+      <workItem from="1780048993585" duration="8952000" />
+      <workItem from="1780133733766" duration="12155000" />
+      <workItem from="1780402336197" duration="4003000" />
+      <workItem from="1780482376662" duration="17398000" />
+      <workItem from="1780561015596" duration="10205000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-method">
+          <url>file://$PROJECT_DIR$/orderservice/src/test/java/org/example/orderservice/OrderServiceIntegrationTest.java</url>
+          <line>74</line>
+          <properties class="org.example.orderservice.OrderServiceIntegrationTest" method="placeOrder_seatUnavailable_returnsConflict">
+            <option name="EMULATED" value="true" />
+            <option name="WATCH_EXIT" value="false" />
+          </properties>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

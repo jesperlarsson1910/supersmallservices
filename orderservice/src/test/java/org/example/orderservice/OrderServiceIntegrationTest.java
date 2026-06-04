@@ -1,19 +1,19 @@
 package org.example.orderservice;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.example.orderservice.grpc.InventoryGrpcClient;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import tools.jackson.databind.ObjectMapper;
 import org.example.orderservice.model.TicketOrder;
 import org.example.orderservice.repository.OutboxRepository;
 import org.example.orderservice.repository.TicketOrderRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-import org.example.orderservice.grpc.InventoryGrpcClient;
 import org.example.grpc.SeatResponse;
 
 import java.math.BigDecimal;
@@ -35,7 +35,8 @@ class OrderServiceIntegrationTest {
     @Autowired TicketOrderRepository orderRepository;
     @Autowired OutboxRepository outboxRepository;
 
-    @MockBean InventoryGrpcClient inventoryGrpcClient;
+    @MockitoBean
+    InventoryGrpcClient inventoryGrpcClient;
 
     @BeforeEach
     void setUp() {
@@ -46,7 +47,7 @@ class OrderServiceIntegrationTest {
     @Test
     void placeOrder_seatAvailable_returnsCreated() throws Exception {
         // Arrange — mock gRPC response
-        when(inventoryGrpcClient.checkSeatAvailability(anyLong(), anyLong(), anyInt()))
+        when(inventoryGrpcClient.checkSeatAvailability(anyLong(), anyLong(), anyInt(), anyLong()))
                 .thenReturn(SeatResponse.newBuilder()
                         .setAvailable(true)
                         .setSeatNumber("A1")
@@ -73,7 +74,7 @@ class OrderServiceIntegrationTest {
     @Test
     void placeOrder_seatUnavailable_returnsConflict() throws Exception {
         // Arrange — gRPC says seat is held
-        when(inventoryGrpcClient.checkSeatAvailability(anyLong(), anyLong(), anyInt()))
+        when(inventoryGrpcClient.checkSeatAvailability(anyLong(), anyLong(), anyInt(), anyLong()))
                 .thenReturn(SeatResponse.newBuilder()
                         .setAvailable(false)
                         .setReason("SEAT_HELD")
@@ -96,7 +97,7 @@ class OrderServiceIntegrationTest {
     @Test
     void getOrder_exists_returnsOrder() throws Exception {
         // Arrange
-        when(inventoryGrpcClient.checkSeatAvailability(anyLong(), anyLong(), anyInt()))
+        when(inventoryGrpcClient.checkSeatAvailability(anyLong(), anyLong(), anyInt(), anyLong()))
                 .thenReturn(SeatResponse.newBuilder().setAvailable(true).build());
 
         TicketOrder order = new TicketOrder(1L, 1L, 2L, 1, new BigDecimal("89.00"));

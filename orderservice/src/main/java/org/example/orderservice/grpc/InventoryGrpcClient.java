@@ -23,31 +23,26 @@ public class InventoryGrpcClient {
             @Value("${grpc.inventory.host:inventoryservice}") String host,
             @Value("${grpc.inventory.port:9090}") int port) {
 
-        this.channel = ManagedChannelBuilder
-            .forAddress(host, port)
-            .usePlaintext() // TLS can be added for production
-            .build();
-
-        this.stub = InventoryGrpcServiceGrpc.newBlockingStub(channel);
+        this.channel = ManagedChannelBuilder.forAddress(host, port).usePlaintext().build();
+        this.stub    = InventoryGrpcServiceGrpc.newBlockingStub(channel);
         logger.info("gRPC client connected to inventoryservice at {}:{}", host, port);
     }
 
-    public SeatResponse checkSeatAvailability(Long seatId, Long ticketEventId, int quantity) {
+    public SeatResponse checkSeatAvailability(Long seatId, Long ticketEventId,
+                                              int quantity, Long userId) {
         SeatRequest request = SeatRequest.newBuilder()
-            .setSeatId(seatId)
-            .setTicketEventId(ticketEventId)
-            .setQuantity(quantity)
-            .build();
+                .setSeatId(seatId)
+                .setTicketEventId(ticketEventId)
+                .setQuantity(quantity)
+                .setUserId(userId != null ? userId : 0L)
+                .build();
 
-        logger.info("gRPC: checking seat {} for event {}", seatId, ticketEventId);
+        logger.info("gRPC: checking seat {} for event {} by user {}", seatId, ticketEventId, userId);
         return stub.checkSeatAvailability(request);
     }
 
     @PreDestroy
     public void shutdown() {
-        if (!channel.isShutdown()) {
-            channel.shutdown();
-            logger.info("gRPC client channel shut down");
-        }
+        if (!channel.isShutdown()) channel.shutdown();
     }
 }

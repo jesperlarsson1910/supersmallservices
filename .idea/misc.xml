@@ -10,7 +10,17 @@
         <option value="$PROJECT_DIR$/orderservice/pom.xml" />
         <option value="$PROJECT_DIR$/event-service/pom.xml" />
         <option value="$PROJECT_DIR$/eventservice/pom.xml" />
+        <option value="$PROJECT_DIR$/notificationservice/pom.xml" />
+        <option value="$PROJECT_DIR$/botservice/pom.xml" />
+        <option value="$PROJECT_DIR$/../ticketbff/pom.xml" />
+        <option value="$PROJECT_DIR$/ticketbff/pom.xml" />
+        <option value="$PROJECT_DIR$/userservice/pom.xml" />
       </list>
+    </option>
+    <option name="ignoredFiles">
+      <set>
+        <option value="$PROJECT_DIR$/ticketbff/pom.xml" />
+      </set>
     </option>
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">

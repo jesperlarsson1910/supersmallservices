@@ -9,5 +9,6 @@ public record TicketOrderPlacedEvent(
         Long ticketEventId,
         Long seatId,
         Integer quantity,
-        BigDecimal totalPrice
+        BigDecimal totalPrice,
+        Long userId
 ) {}
