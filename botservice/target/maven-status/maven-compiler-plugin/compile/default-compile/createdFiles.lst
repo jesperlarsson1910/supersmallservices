@@ -1,3 +1,0 @@
-org\example\botservice\service\BotService.class
-org\example\botservice\config\RabbitConfig.class
-org\example\botservice\model\SeatHoldExpiredEvent.class

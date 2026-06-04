@@ -39,7 +39,7 @@ kubectl wait --namespace ticketservice \
 kubectl apply -f orderservice.yaml
 kubectl apply -f notificationservice.yaml
 kubectl apply -f botservice.yaml
-kubectl apply -f ticketbff.yaml
+kubectl apply -f bff.yaml
 
 echo ""
 echo "==> All resources applied. Checking status..."
@@ -50,6 +50,4 @@ echo "==> Services:"
 kubectl get services -n ticketservice
 
 echo ""
-echo "==> Frontend available at http://localhost:3000 once ticketbff pod is Ready"
-echo "==> RabbitMQ UI: kubectl port-forward -n ticketservice svc/rabbitmq 15672:15672"
-echo "==> MailHog UI:  kubectl port-forward -n ticketservice svc/mailhog 8025:8025"
+echo "==> Frontend available at http://localhost:3000 once bff pod is Ready"
